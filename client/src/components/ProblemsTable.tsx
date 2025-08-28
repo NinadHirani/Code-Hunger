@@ -92,7 +92,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ setLoadingProblems }) => 
                                                                                 {problem.difficulty}
                                                                         </td>
                                                                         <td className="px-6 py-4 text-dark-gray-7">
-                                                                                {problem.category || "Algorithm"}
+                                                                                {problem.topics?.[0] || "Algorithm"}
                                                                         </td>
                                                                         <td className={"px-6 py-4"}>
                                                                                 <p className='text-gray-400'>Coming soon</p>

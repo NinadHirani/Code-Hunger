@@ -1,6 +1,6 @@
 # Overview
 
-This is a LeetCode clone application built with modern web technologies. It's a full-stack coding practice platform that allows users to solve algorithmic problems, submit solutions, and track their progress. The application provides an interactive coding environment with syntax highlighting, problem descriptions, test case validation, and user authentication through Google Firebase.
+This is a Code Hunger application built with modern web technologies. It's a full-stack coding practice platform that allows users to solve algorithmic problems, submit solutions, and track their progress. The application provides an interactive coding environment with syntax highlighting, problem descriptions, test case validation, and user authentication through Firebase.
 
 # User Preferences
 
