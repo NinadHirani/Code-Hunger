@@ -65,7 +65,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = () => {
                                                         </tr>
                                                 </thead>
                                                 <tbody className='text-white'>
-                                                        {problems.map((problem: Problem, idx: number) => (
+                                                        {problems.filter(problem => problem.title !== "Two Sum").map((problem: Problem, idx: number) => (
                                                                 <tr 
                                                                         className={`${idx % 2 === 1 ? "bg-dark-layer-1" : ""} border-b border-dark-divider-border-2 hover:bg-dark-fill-2 transition-colors`} 
                                                                         key={problem.slug}
