@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* LeetCode specific colors */
+  --dark-layer-1: hsl(0, 0%, 15.7%);
+  --dark-layer-2: hsl(0, 0%, 10.2%);
+  --dark-label-2: hsla(239, 15%, 95%, 0.75);
+  --dark-divider-border-2: hsl(0, 0%, 23.9%);
+  --dark-fill-2: hsla(0, 0%, 100%, 0.14);
+  --dark-fill-3: hsla(0, 0%, 100%, 0.1);
+  --dark-gray-6: hsl(0, 0%, 54.1%);
+  --dark-gray-7: hsl(0, 0%, 70.2%);
+  --gray-8: hsl(0, 0%, 14.9%);
+  --dark-gray-8: hsl(0, 0%, 85.9%);
+  --brand-orange: hsl(32, 100%, 54.3%);
+  --brand-orange-s: hsl(32, 86%, 40.8%);
+  --dark-yellow: hsl(48, 100%, 55.9%);
+  --dark-pink: hsl(342, 100%, 60.8%);
+  --olive: hsl(177, 100%, 36.1%);
+  --dark-green-s: hsl(142, 62%, 45.3%);
+  --dark-blue-s: hsl(218, 100%, 52%);
+
+  /* Base colors */
+  --background: hsl(0, 0%, 10.2%);
+  --foreground: hsl(0, 0%, 85.9%);
+  --card: hsl(0, 0%, 15.7%);
+  --card-foreground: hsl(0, 0%, 85.9%);
+  --popover: hsl(0, 0%, 10.2%);
+  --popover-foreground: hsl(0, 0%, 85.9%);
+  --primary: hsl(32, 100%, 54.3%);
+  --primary-foreground: hsl(0, 0%, 9%);
+  --secondary: hsl(0, 0%, 23.9%);
+  --secondary-foreground: hsl(0, 0%, 85.9%);
+  --muted: hsl(0, 0%, 15%);
+  --muted-foreground: hsl(0, 0%, 54%);
+  --accent: hsl(32, 100%, 54.3%);
+  --accent-foreground: hsl(0, 0%, 9%);
+  --destructive: hsl(342, 100%, 60.8%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 23.9%);
+  --input: hsl(0, 0%, 23.9%);
+  --ring: hsl(32, 100%, 54.3%);
+  
+  /* Chart colors */
+  --chart-1: hsl(32, 100%, 54.3%);
+  --chart-2: hsl(177, 100%, 36.1%);
+  --chart-3: hsl(48, 100%, 55.9%);
+  --chart-4: hsl(142, 62%, 45.3%);
+  --chart-5: hsl(342, 100%, 60.8%);
+  
+  /* Sidebar colors */
+  --sidebar-background: hsl(0, 0%, 15.7%);
+  --sidebar-foreground: hsl(0, 0%, 85.9%);
+  --sidebar-primary: hsl(32, 100%, 54.3%);
+  --sidebar-primary-foreground: hsl(0, 0%, 100%);
+  --sidebar-accent: hsl(32, 100%, 54.3%);
+  --sidebar-accent-foreground: hsl(0, 0%, 9%);
+  --sidebar-border: hsl(0, 0%, 23.9%);
+  --sidebar-ring: hsl(32, 100%, 54.3%);
+  
+  /* Font families */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: "Fira Code", ui-monospace, monospace;
+  
+  /* Other properties */
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: hsl(0, 0%, 10.2%);
+  --foreground: hsl(0, 0%, 85.9%);
+  --card: hsl(0, 0%, 15.7%);
+  --card-foreground: hsl(0, 0%, 85.9%);
+  --popover: hsl(0, 0%, 10.2%);
+  --popover-foreground: hsl(0, 0%, 85.9%);
+  --primary: hsl(32, 100%, 54.3%);
+  --primary-foreground: hsl(0, 0%, 9%);
+  --secondary: hsl(0, 0%, 23.9%);
+  --secondary-foreground: hsl(0, 0%, 85.9%);
+  --muted: hsl(0, 0%, 15%);
+  --muted-foreground: hsl(0, 0%, 54%);
+  --accent: hsl(32, 100%, 54.3%);
+  --accent-foreground: hsl(0, 0%, 9%);
+  --destructive: hsl(342, 100%, 60.8%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --border: hsl(0, 0%, 23.9%);
+  --input: hsl(0, 0%, 23.9%);
+  --ring: hsl(32, 100%, 54.3%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+
+/* Code editor specific styles */
+.code-editor {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.code-editor .cm-editor {
+  background: transparent;
+}
+
+.code-editor .cm-focused {
+  outline: none;
+}
+
+.code-editor .cm-content {
+  padding: 16px;
+}
+
+.code-editor .cm-line {
+  padding: 0;
+}
+
+/* Split view styles */
+.split-view {
+  resize: horizontal;
+  overflow: auto;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dark-layer-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dark-gray-6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dark-gray-7);
+}
