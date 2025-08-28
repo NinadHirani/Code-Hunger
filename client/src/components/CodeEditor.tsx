@@ -181,8 +181,9 @@ export function CodeEditor({ problemSlug }: CodeEditorProps) {
               <option value="cpp">C++</option>
             </select>
             
-            <button className="text-dark-gray-6 hover:text-brand-orange transition-colors text-sm" data-testid="settings-btn">
-              <i className="fas fa-cog"></i> Settings
+            <button className="preferenceBtn group" data-testid="settings-btn">
+              <i className="fas fa-cog"></i>
+              <div className="preferenceBtn-tooltip">Settings</div>
             </button>
           </div>
           
@@ -190,11 +191,11 @@ export function CodeEditor({ problemSlug }: CodeEditorProps) {
             <button 
               onClick={handleRun}
               disabled={runCode.isPending}
-              className="bg-dark-layer-2 hover:bg-dark-fill-2 px-3 py-2 rounded text-sm transition-colors disabled:opacity-50"
+              className="bg-dark-layer-2 hover:bg-dark-fill-2 px-4 py-2 rounded text-sm font-medium transition-colors disabled:opacity-50"
               data-testid="run-btn"
             >
-              <i className="fas fa-play"></i> 
-              {runCode.isPending ? " Running..." : " Run"}
+              <i className="fas fa-play mr-2"></i>
+              {runCode.isPending ? "Running..." : "Run"}
             </button>
             <button 
               onClick={handleSubmit}

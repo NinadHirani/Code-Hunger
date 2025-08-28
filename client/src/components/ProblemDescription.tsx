@@ -99,19 +99,17 @@ export function ProblemDescription({ problemSlug }: ProblemDescriptionProps) {
         {problem.examples && Array.isArray(problem.examples) && problem.examples.length > 0 && (
           <div className="space-y-4" data-testid="examples">
             {(problem.examples as any[]).map((example: any, index: number) => (
-              <div key={index}>
+              <div key={index} className="example-card">
                 <h3 className="text-white font-semibold mb-2" data-testid={`example-${index + 1}-title`}>
                   Example {index + 1}:
                 </h3>
-                <div className="bg-dark-layer-2 p-4 rounded-lg" data-testid={`example-${index + 1}-content`}>
-                  <div className="font-mono text-sm">
-                    <div><strong>Input:</strong> {example.input}</div>
-                    <div><strong>Output:</strong> {example.output}</div>
-                    {example.explanation && (
-                      <div><strong>Explanation:</strong> {example.explanation}</div>
-                    )}
-                  </div>
-                </div>
+                <pre data-testid={`example-${index + 1}-content`}>
+<strong>Input:</strong> {example.input}
+<strong>Output:</strong> {example.output}
+{example.explanation && (
+<><strong>Explanation:</strong> {example.explanation}</>
+)}
+                </pre>
               </div>
             ))}
           </div>
