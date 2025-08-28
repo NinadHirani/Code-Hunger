@@ -26,8 +26,7 @@ export function Header() {
           {/* Logo and Navigation */}
           <div className="flex items-center space-x-8">
             <Link href="/" className="flex items-center space-x-2" data-testid="logo">
-              <div className="text-brand-orange text-2xl font-bold">LeetCode</div>
-              <span className="text-dark-gray-6 text-sm">Clone</span>
+              <div className="text-brand-orange text-2xl font-bold">Code Hunger</div>
             </Link>
             
             <nav className="hidden md:flex items-center space-x-6" data-testid="nav-main">

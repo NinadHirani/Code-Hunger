@@ -8,11 +8,9 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "@/lib/firebase";
 import type { Problem } from "@shared/schema";
 
-type ProblemsTableProps = {
-        setLoadingProblems?: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type ProblemsTableProps = {};
 
-const ProblemsTable: React.FC<ProblemsTableProps> = ({ setLoadingProblems }) => {
+const ProblemsTable: React.FC<ProblemsTableProps> = () => {
         const [youtubePlayer, setYoutubePlayer] = useState({
                 isOpen: false,
                 videoId: "",
@@ -25,11 +23,6 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({ setLoadingProblems }) => 
                 queryKey: ['/api/problems']
         });
         
-        useEffect(() => {
-                if (setLoadingProblems) {
-                        setLoadingProblems(isLoading);
-                }
-        }, [isLoading, setLoadingProblems]);
         
         const closeModal = () => {
                 setYoutubePlayer({ isOpen: false, videoId: "" });
