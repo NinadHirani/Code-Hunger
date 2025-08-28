@@ -4,10 +4,14 @@ import { Sidebar } from "@/components/Sidebar";
 import { ProblemDescription } from "@/components/ProblemDescription";
 import { CodeEditor } from "@/components/CodeEditor";
 import { useLocation } from "wouter";
+import { useRecoilValue } from "recoil";
+import { authModalState } from "@/atoms/authModalAtom";
+import AuthModal from "@/components/Modals/AuthModal";
 import Split from "react-split";
 
 export default function Home() {
   const [location] = useLocation();
+  const authModal = useRecoilValue(authModalState);
   
   // Extract problem slug from URL
   const problemSlug = location.startsWith("/problems/") 
@@ -47,6 +51,9 @@ export default function Home() {
           </Split>
         </main>
       </div>
+      
+      {/* Authentication Modal */}
+      {authModal.isOpen && <AuthModal />}
     </div>
   );
 }

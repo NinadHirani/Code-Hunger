@@ -1,16 +1,19 @@
 import { useState } from "react";
-import { useAuth } from "@/hooks/use-auth";
-import { AuthModal } from "./AuthModal";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useSetRecoilState } from "recoil";
+import { authModalState } from "@/atoms/authModalAtom";
+import { auth } from "@/lib/firebase";
 import { Link } from "wouter";
 
 export function Header() {
-  const { user, signOut } = useAuth();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [user, loading, error] = useAuthState(auth);
+  const setAuthModal = useSetRecoilState(authModalState);
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      const { signOutUser } = await import("@/lib/firebase");
+      await signOutUser();
     } catch (error) {
       console.error("Failed to sign out:", error);
     }
@@ -85,7 +88,7 @@ export function Header() {
                 </div>
               ) : (
                 <button 
-                  onClick={() => setShowAuthModal(true)}
+                  onClick={() => setAuthModal({ isOpen: true, type: "login" })}
                   className="bg-brand-orange hover:bg-brand-orange-s text-black px-4 py-2 rounded text-sm font-medium transition-colors"
                   data-testid="sign-in-btn"
                 >
@@ -97,10 +100,6 @@ export function Header() {
         </div>
       </header>
 
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)} 
-      />
     </>
   );
 }
