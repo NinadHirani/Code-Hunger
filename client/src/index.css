@@ -255,3 +255,105 @@ code {
 .preferenceBtn:hover .preferenceBtn-tooltip {
   @apply opacity-100;
 }
+
+/* Z-index utilities */
+.z-modal {
+  z-index: 1000;
+}
+
+/* Brand color utilities */
+.bg-brand-orange {
+  background-color: var(--brand-orange);
+}
+
+.bg-brand-orange-s {
+  background-color: var(--brand-orange-s);
+}
+
+.text-brand-orange {
+  color: var(--brand-orange);
+}
+
+.text-dark-label-2 {
+  color: var(--dark-label-2);
+}
+
+.text-dark-gray-6 {
+  color: var(--dark-gray-6);
+}
+
+.text-dark-gray-7 {
+  color: var(--dark-gray-7);
+}
+
+.text-dark-gray-8 {
+  color: var(--dark-gray-8);
+}
+
+.bg-dark-layer-1 {
+  background-color: var(--dark-layer-1);
+}
+
+.bg-dark-layer-2 {
+  background-color: var(--dark-layer-2);
+}
+
+.bg-dark-fill-2 {
+  background-color: var(--dark-fill-2);
+}
+
+.bg-dark-fill-3 {
+  background-color: var(--dark-fill-3);
+}
+
+.text-dark-green-s {
+  color: var(--dark-green-s);
+}
+
+.bg-dark-green-s {
+  background-color: var(--dark-green-s);
+}
+
+.text-dark-yellow {
+  color: var(--dark-yellow);
+}
+
+.bg-dark-yellow {
+  background-color: var(--dark-yellow);
+}
+
+.text-dark-pink {
+  color: var(--dark-pink);
+}
+
+.bg-dark-pink {
+  background-color: var(--dark-pink);
+}
+
+.text-dark-blue-s {
+  color: var(--dark-blue-s);
+}
+
+.bg-green-3 {
+  background-color: var(--dark-green-s);
+}
+
+.text-green-s {
+  color: var(--dark-green-s);
+}
+
+.bg-olive {
+  background-color: var(--olive);
+}
+
+.text-olive {
+  color: var(--olive);
+}
+
+.text-label-3 {
+  color: var(--dark-label-2);
+}
+
+.border-dark-divider-border-2 {
+  border-color: var(--dark-divider-border-2);
+}

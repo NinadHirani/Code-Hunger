@@ -9,6 +9,7 @@ import { RecoilRoot } from "recoil";
 import { ToastContainer, toast } from "react-toastify";
 import { handleRedirectResult } from "@/lib/firebase";
 import Home from "@/pages/Home";
+import ProblemPage from "@/pages/ProblemPage";
 import NotFound from "@/pages/not-found";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -32,7 +33,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/problems/:slug" component={Home} />
+      <Route path="/problems/:slug" component={ProblemPage} />
       <Route component={NotFound} />
     </Switch>
   );
