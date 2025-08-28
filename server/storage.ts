@@ -86,7 +86,7 @@ You can return the answer in any order.`,
         ]
       },
       {
-        title: "2. Reverse Linked List",
+        title: "Reverse Linked List",
         slug: "reverse-linked-list",
         difficulty: "Easy",
         description: `Given the head of a singly linked list, reverse the list, and return the reversed list.`,
@@ -140,7 +140,7 @@ def reverseLinkedList(head):
         ]
       },
       {
-        title: "3. Jump Game",
+        title: "Jump Game",
         slug: "jump-game",
         difficulty: "Medium",
         description: `You are given an integer array nums. You are initially positioned at the first index and each element in the array represents your maximum jump length at that position.
@@ -181,7 +181,7 @@ Return true if you can reach the last index, or false otherwise.`,
         ]
       },
       {
-        title: "4. Valid Parentheses",
+        title: "Valid Parentheses",
         slug: "valid-parentheses",
         difficulty: "Easy",
         description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
@@ -232,7 +232,7 @@ An input string is valid if:
         ]
       },
       {
-        title: "5. Search a 2D Matrix",
+        title: "Search a 2D Matrix",
         slug: "search-a-2d-matrix",
         difficulty: "Medium",
         description: `Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
@@ -287,7 +287,7 @@ Given matrix, an m x n matrix, and target, return true if target is in the matri
         ]
       },
       {
-        title: "6. Container With Most Water",
+        title: "Container With Most Water",
         slug: "container-with-most-water",
         difficulty: "Medium",
         description: `You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
@@ -331,7 +331,7 @@ Notice that you may not slant the container.`,
         ]
       },
       {
-        title: "7. Merge Intervals",
+        title: "Merge Intervals",
         slug: "merge-intervals",
         difficulty: "Medium",
         description: `Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.`,
@@ -370,7 +370,7 @@ Notice that you may not slant the container.`,
         ]
       },
       {
-        title: "8. Maximum Depth of Binary Tree",
+        title: "Maximum Depth of Binary Tree",
         slug: "maximum-depth-of-binary-tree",
         difficulty: "Easy",
         description: `Given the root of a binary tree, return its maximum depth.
@@ -422,7 +422,7 @@ def maxDepth(root):
         ]
       },
       {
-        title: "9. Best Time to Buy and Sell Stock",
+        title: "Best Time to Buy and Sell Stock",
         slug: "best-time-to-buy-and-sell-stock",
         difficulty: "Easy",
         description: `You are given an array prices where prices[i] is the price of a given stock on the ith day.
@@ -464,7 +464,7 @@ Return the maximum profit you can achieve from this transaction. If you cannot a
         ]
       },
       {
-        title: "10. Subsets",
+        title: "Subsets",
         slug: "subsets",
         difficulty: "Medium", 
         description: `Given an integer array nums of unique elements, return all possible subsets (the power set).
