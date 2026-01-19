@@ -1,15 +1,7 @@
-import { useState } from "react";
 import Topbar from "@/components/Topbar";
 import ProblemsTable from "@/components/ProblemsTable";
-import { useLocation } from "wouter";
-import { useRecoilValue } from "recoil";
-import { authModalState } from "@/atoms/authModalAtom";
-import AuthModal from "@/components/Modals/AuthModal";
 
 export default function Home() {
-  const [location] = useLocation();
-  const authModal = useRecoilValue(authModalState);
-
   return (
     <div className="min-h-screen bg-dark-layer-2" data-testid="home-page">
       <Topbar />
@@ -26,9 +18,6 @@ export default function Home() {
         
         <ProblemsTable />
       </div>
-      
-      {/* Authentication Modal */}
-      {authModal.isOpen && <AuthModal />}
     </div>
   );
 }
