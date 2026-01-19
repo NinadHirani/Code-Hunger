@@ -1,5 +1,6 @@
 import Topbar from "@/components/Topbar";
 import ProblemsTable from "@/components/ProblemsTable";
+import InteractionsSection from "@/components/InteractionsSection";
 
 export default function Home() {
   return (
@@ -15,6 +16,8 @@ export default function Home() {
             Enhance your programming skills with our collection of coding challenges
           </p>
         </div>
+        
+        <InteractionsSection />
         
         <ProblemsTable />
       </div>

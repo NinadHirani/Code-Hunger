@@ -15,6 +15,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get user interaction data for a problem (must be before :identifier route)
+  app.get("/api/problems/:slug/interaction", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const visitorId = req.query.visitorId as string || "anonymous";
+      
+      const interaction = await storage.getUserProblemInteraction(visitorId, slug);
+      const problem = await storage.getProblemBySlug(slug);
+      
+      res.json({
+        liked: interaction?.liked || false,
+        disliked: interaction?.disliked || false,
+        starred: interaction?.starred || false,
+        solved: interaction?.solved || false,
+        likes: problem?.likes || 0,
+        dislikes: problem?.dislikes || 0
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch interaction data" });
+    }
+  });
+
+  // Like/unlike a problem
+  app.post("/api/problems/:slug/like", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { visitorId } = req.body;
+      
+      const result = await storage.toggleLike(visitorId || "anonymous", slug);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to toggle like" });
+    }
+  });
+
+  // Dislike/undislike a problem
+  app.post("/api/problems/:slug/dislike", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { visitorId } = req.body;
+      
+      const result = await storage.toggleDislike(visitorId || "anonymous", slug);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to toggle dislike" });
+    }
+  });
+
+  // Star/unstar a problem
+  app.post("/api/problems/:slug/star", async (req, res) => {
+    try {
+      const { slug } = req.params;
+      const { visitorId } = req.body;
+      
+      const result = await storage.toggleStar(visitorId || "anonymous", slug);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to toggle star" });
+    }
+  });
+
+  // Get all interactions for a visitor (for main page)
+  app.get("/api/interactions", async (req, res) => {
+    try {
+      const visitorId = req.query.visitorId as string || "anonymous";
+      const interactions = await storage.getAllInteractions(visitorId);
+      res.json(interactions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch interactions" });
+    }
+  });
+
   // Get a specific problem by ID or slug
   app.get("/api/problems/:identifier", async (req, res) => {
     try {
@@ -134,67 +206,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ message: "Failed to create/update user" });
-    }
-  });
-
-  // Get user interaction data for a problem
-  app.get("/api/problems/:slug/interaction", async (req, res) => {
-    try {
-      const { slug } = req.params;
-      const visitorId = req.query.visitorId as string || "anonymous";
-      
-      const interaction = await storage.getUserProblemInteraction(visitorId, slug);
-      const problem = await storage.getProblemBySlug(slug);
-      
-      res.json({
-        liked: interaction?.liked || false,
-        disliked: interaction?.disliked || false,
-        starred: interaction?.starred || false,
-        solved: interaction?.solved || false,
-        likes: problem?.likes || 0,
-        dislikes: problem?.dislikes || 0
-      });
-    } catch (error) {
-      res.status(500).json({ message: "Failed to fetch interaction data" });
-    }
-  });
-
-  // Like/unlike a problem
-  app.post("/api/problems/:slug/like", async (req, res) => {
-    try {
-      const { slug } = req.params;
-      const { visitorId } = req.body;
-      
-      const result = await storage.toggleLike(visitorId || "anonymous", slug);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to toggle like" });
-    }
-  });
-
-  // Dislike/undislike a problem
-  app.post("/api/problems/:slug/dislike", async (req, res) => {
-    try {
-      const { slug } = req.params;
-      const { visitorId } = req.body;
-      
-      const result = await storage.toggleDislike(visitorId || "anonymous", slug);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to toggle dislike" });
-    }
-  });
-
-  // Star/unstar a problem
-  app.post("/api/problems/:slug/star", async (req, res) => {
-    try {
-      const { slug } = req.params;
-      const { visitorId } = req.body;
-      
-      const result = await storage.toggleStar(visitorId || "anonymous", slug);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "Failed to toggle star" });
     }
   });
 

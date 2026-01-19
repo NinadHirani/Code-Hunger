@@ -28,6 +28,7 @@ export interface IStorage {
   toggleLike(visitorId: string, problemSlug: string): Promise<any>;
   toggleDislike(visitorId: string, problemSlug: string): Promise<any>;
   toggleStar(visitorId: string, problemSlug: string): Promise<any>;
+  getAllInteractions(visitorId: string): Promise<any[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -702,6 +703,29 @@ The solution set must not contain duplicate subsets. Return the solution in any 
     current.starred = !current.starred;
     this.userInteractions.set(key, current);
     return { starred: current.starred };
+  }
+
+  async getAllInteractions(visitorId: string): Promise<any[]> {
+    const result: any[] = [];
+    const problems = await this.getProblems();
+    
+    const entries = Array.from(this.userInteractions.entries());
+    for (const [key, interaction] of entries) {
+      if (key.startsWith(`${visitorId}-`)) {
+        const problemSlug = key.replace(`${visitorId}-`, '');
+        const problem = problems.find(p => p.slug === problemSlug);
+        if (problem && (interaction.liked || interaction.disliked || interaction.starred)) {
+          result.push({
+            problemSlug,
+            problemTitle: problem.title,
+            difficulty: problem.difficulty,
+            ...interaction
+          });
+        }
+      }
+    }
+    
+    return result;
   }
 }
 
