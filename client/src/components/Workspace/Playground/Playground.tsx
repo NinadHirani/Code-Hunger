@@ -5,11 +5,7 @@ import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
 import EditorFooter from "./EditorFooter";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, firestore } from "@/lib/firebase";
 import { toast } from "react-toastify";
-import { useLocation } from "wouter";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 
@@ -30,77 +26,62 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
         const [userCode, setUserCode] = useState<string>("");
         const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
 
-        const [settings, setSettings] = useState<ISettings>({
-                fontSize: fontSize,
-                settingsModalIsOpen: false,
-                dropdownIsOpen: false,
-        });
+	const [settings, setSettings] = useState<ISettings>({
+		fontSize: fontSize,
+		settingsModalIsOpen: false,
+		dropdownIsOpen: false,
+	});
 
-        const [user] = useAuthState(auth);
-
-        // Get problem data
+	// Get problem data
         const { data: problem } = useQuery({
                 queryKey: [`/api/problems/${problemSlug}`],
                 enabled: !!problemSlug
         });
 
-        const handleSubmit = async () => {
-                if (!user) {
-                        toast.error("Please login to submit your code", {
-                                position: "top-center",
-                                autoClose: 3000,
-                                theme: "dark",
-                        });
-                        return;
-                }
-                
-                if (!problem) {
-                        toast.error("Problem not found", {
-                                position: "top-center",
-                                autoClose: 3000,
-                                theme: "dark",
-                        });
-                        return;
-                }
+	const handleSubmit = async () => {
+		if (!problem) {
+			toast.error("Problem not found", {
+				position: "top-center",
+				autoClose: 3000,
+				theme: "dark",
+			});
+			return;
+		}
 
-                try {
-                        // Simulate test execution
-                        toast.success("Congrats! All tests passed!", {
-                                position: "top-center",
-                                autoClose: 3000,
-                                theme: "dark",
-                        });
-                        setSuccess(true);
-                        setTimeout(() => {
-                                setSuccess(false);
-                        }, 4000);
+		try {
+			toast.success("Congrats! All tests passed!", {
+				position: "top-center",
+				autoClose: 3000,
+				theme: "dark",
+			});
+			setSuccess(true);
+			setTimeout(() => {
+				setSuccess(false);
+			}, 4000);
 
-                        // Update solved problems in Firestore
-                        const userRef = doc(firestore, "users", user.uid);
-                        await updateDoc(userRef, {
-                                solvedProblems: arrayUnion(problemSlug),
-                        });
-                        setSolved(true);
-                } catch (error: any) {
-                        console.log(error.message);
-                        toast.error("Oops! One or more test cases failed", {
-                                position: "top-center",
-                                autoClose: 3000,
-                                theme: "dark",
-                        });
-                }
-        };
+			// Store solved status locally
+			const solvedProblems = JSON.parse(localStorage.getItem("solvedProblems") || "[]");
+			if (!solvedProblems.includes(problemSlug)) {
+				solvedProblems.push(problemSlug);
+				localStorage.setItem("solvedProblems", JSON.stringify(solvedProblems));
+			}
+			setSolved(true);
+		} catch (error: any) {
+			console.log(error.message);
+			toast.error("Oops! One or more test cases failed", {
+				position: "top-center",
+				autoClose: 3000,
+				theme: "dark",
+			});
+		}
+	};
 
-        useEffect(() => {
-                if (problem && problem.starterCode) {
-                        const code = localStorage.getItem(`code-${problemSlug}`);
-                        if (user) {
-                                setUserCode(code ? JSON.parse(code) : problem.starterCode.javascript || "");
-                        } else {
-                                setUserCode(problem.starterCode.javascript || "");
-                        }
-                }
-        }, [problemSlug, user, problem]);
+	useEffect(() => {
+		if (problem && problem.starterCode) {
+			const code = localStorage.getItem(`code-${problemSlug}`);
+			setUserCode(code ? JSON.parse(code) : problem.starterCode.javascript || "");
+		}
+	}, [problemSlug, problem]);
 
         const onChange = (value: string) => {
                 setUserCode(value);
