@@ -1,9 +1,6 @@
 import CircleSkeleton from "@/components/Skeletons/CircleSkeleton";
 import RectangleSkeleton from "@/components/Skeletons/RectangleSkeleton";
-import { auth, firestore } from "@/lib/firebase";
-import { arrayRemove, arrayUnion, doc, getDoc, runTransaction, updateDoc } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { AiFillLike, AiFillDislike, AiOutlineLoading3Quarters, AiFillStar } from "react-icons/ai";
 import { BsCheck2Circle } from "react-icons/bs";
 import { TiStarOutline } from "react-icons/ti";
@@ -27,8 +24,7 @@ interface DBProblem {
 }
 
 const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problemSlug, _solved }) => {
-        const [user] = useAuthState(auth);
-        const [updating, setUpdating] = useState(false);
+	const [updating, setUpdating] = useState(false);
         
         // Get problem data
         const { data: problem, isLoading } = useQuery({
@@ -39,70 +35,47 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problemSlug, _s
         const { liked, disliked, starred, solved, setData } = useGetUsersDataOnProblem(problemSlug);
         const { currentProblem, loading, problemDifficultyClass, setCurrentProblem } = useGetCurrentProblem(problemSlug);
 
-        const returnUserDataAndProblemData = async (transaction: any) => {
-                const userRef = doc(firestore, "users", user!.uid);
-                const problemRef = doc(firestore, "problems", problemSlug);
-                const userDoc = await transaction.get(userRef);
-                const problemDoc = await transaction.get(problemRef);
-                return { userDoc, problemDoc, userRef, problemRef };
-        };
+	const handleLike = async () => {
+		if (updating) return;
+		setUpdating(true);
 
-        const handleLike = async () => {
-                if (!user) {
-                        toast.error("You must be logged in to like a problem", { position: "top-left", theme: "dark" });
-                        return;
-                }
-                if (updating) return;
-                setUpdating(true);
+		if (liked) {
+			toast.info("Removed like", { position: "top-left", theme: "dark" });
+			setData((prev) => ({ ...prev, liked: false }));
+		} else {
+			toast.success("Problem liked!", { position: "top-left", theme: "dark" });
+			setData((prev) => ({ ...prev, liked: true, disliked: false }));
+		}
+		setUpdating(false);
+	};
 
-                // For now, just show success message - full Firebase integration would go here
-                if (liked) {
-                        toast.info("Removed like", { position: "top-left", theme: "dark" });
-                        setData((prev) => ({ ...prev, liked: false }));
-                } else {
-                        toast.success("Problem liked!", { position: "top-left", theme: "dark" });
-                        setData((prev) => ({ ...prev, liked: true, disliked: false }));
-                }
-                setUpdating(false);
-        };
+	const handleDislike = async () => {
+		if (updating) return;
+		setUpdating(true);
 
-        const handleDislike = async () => {
-                if (!user) {
-                        toast.error("You must be logged in to dislike a problem", { position: "top-left", theme: "dark" });
-                        return;
-                }
-                if (updating) return;
-                setUpdating(true);
+		if (disliked) {
+			toast.info("Removed dislike", { position: "top-left", theme: "dark" });
+			setData((prev) => ({ ...prev, disliked: false }));
+		} else {
+			toast.info("Problem disliked", { position: "top-left", theme: "dark" });
+			setData((prev) => ({ ...prev, disliked: true, liked: false }));
+		}
+		setUpdating(false);
+	};
 
-                // For now, just show success message - full Firebase integration would go here
-                if (disliked) {
-                        toast.info("Removed dislike", { position: "top-left", theme: "dark" });
-                        setData((prev) => ({ ...prev, disliked: false }));
-                } else {
-                        toast.info("Problem disliked", { position: "top-left", theme: "dark" });
-                        setData((prev) => ({ ...prev, disliked: true, liked: false }));
-                }
-                setUpdating(false);
-        };
+	const handleStar = async () => {
+		if (updating) return;
+		setUpdating(true);
 
-        const handleStar = async () => {
-                if (!user) {
-                        toast.error("You must be logged in to star a problem", { position: "top-left", theme: "dark" });
-                        return;
-                }
-                if (updating) return;
-                setUpdating(true);
-
-                // For now, just show success message - full Firebase integration would go here
-                if (starred) {
-                        toast.info("Removed from starred", { position: "top-left", theme: "dark" });
-                        setData((prev) => ({ ...prev, starred: false }));
-                } else {
-                        toast.success("Problem starred!", { position: "top-left", theme: "dark" });
-                        setData((prev) => ({ ...prev, starred: true }));
-                }
-                setUpdating(false);
-        };
+		if (starred) {
+			toast.info("Removed from starred", { position: "top-left", theme: "dark" });
+			setData((prev) => ({ ...prev, starred: false }));
+		} else {
+			toast.success("Problem starred!", { position: "top-left", theme: "dark" });
+			setData((prev) => ({ ...prev, starred: true }));
+		}
+		setUpdating(false);
+	};
 
         if (isLoading || !problem) {
                 return (
@@ -279,25 +252,24 @@ function useGetCurrentProblem(problemSlug: string) {
 }
 
 function useGetUsersDataOnProblem(problemSlug: string) {
-        const [data, setData] = useState({ liked: false, disliked: false, starred: false, solved: false });
-        const [user] = useAuthState(auth);
+	const [data, setData] = useState({ liked: false, disliked: false, starred: false, solved: false });
 
-        // For now, we'll just return default state - in a full Firebase setup, this would query user data
-        useEffect(() => {
-                if (user) {
-                        // This would fetch user's interaction data with the problem from Firestore
-                        setData({
-                                liked: false,
-                                disliked: false,
-                                starred: false,
-                                solved: false,
-                        });
-                } else {
-                        setData({ liked: false, disliked: false, starred: false, solved: false });
-                }
-        }, [problemSlug, user]);
+	useEffect(() => {
+		const stored = localStorage.getItem(`problem-data-${problemSlug}`);
+		if (stored) {
+			setData(JSON.parse(stored));
+		}
+	}, [problemSlug]);
 
-        return { ...data, setData };
+	const setDataWithStorage = (updater: (prev: typeof data) => typeof data) => {
+		setData((prev) => {
+			const newData = updater(prev);
+			localStorage.setItem(`problem-data-${problemSlug}`, JSON.stringify(newData));
+			return newData;
+		});
+	};
+
+	return { ...data, setData: setDataWithStorage };
 }
 
 export default ProblemDescription;
