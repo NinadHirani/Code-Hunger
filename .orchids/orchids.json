@@ -1,0 +1,7 @@
+{
+  "projectId": "e47e7a50-9b61-4984-963d-696bda0b4e1a",
+  "createdAt": 1737331417000,
+  "startupCommands": [
+    "npm install; NODE_ENV=development ./node_modules/.bin/tsx server/index.ts"
+  ]
+}
