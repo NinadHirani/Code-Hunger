@@ -130,7 +130,7 @@ You can return the answer in any order.`,
  *     this.next = (next===undefined ? null : next)
  * }
  */
-function reverseLinkedList(head) {
+function reverseList(head) {
     // Write your code here
 };`,
           python: `# Definition for singly-linked list.
@@ -138,14 +138,46 @@ function reverseLinkedList(head) {
 #     def __init__(self, val=0, next=None):
 #         self.val = val
 #         self.next = next
-def reverseLinkedList(head):
+def reverseList(head):
     # Write your code here
-    pass`
+    pass`,
+          java: `/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        // Write your code here
+    }
+}`,
+          cpp: `/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { head: [1, 2, 3, 4, 5] }, expected: [5, 4, 3, 2, 1] },
           { input: { head: [1, 2, 3] }, expected: [3, 2, 1] },
-          { input: { head: [1] }, expected: [1] }
+          { input: { head: [1] }, expected: [1] },
+          { input: { head: [] }, expected: [] }
         ]
       },
       {
@@ -423,11 +455,49 @@ function maxDepth(root) {
 #         self.right = right
 def maxDepth(root):
     # Write your code here
-    pass`
+    pass`,
+          java: `/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode() {}
+ *     TreeNode(int val) { this.val = val; }
+ *     TreeNode(int val, TreeNode left, TreeNode right) {
+ *         this.val = val;
+ *         this.left = left;
+ *         this.right = right;
+ *     }
+ * }
+ */
+class Solution {
+    public int maxDepth(TreeNode root) {
+        // Write your code here
+    }
+}`,
+          cpp: `/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { root: [3,9,20,null,null,15,7] }, expected: 3 },
-          { input: { root: [1,null,2] }, expected: 2 }
+          { input: { root: [1,null,2] }, expected: 2 },
+          { input: { root: [] }, expected: 0 }
         ]
       },
       {

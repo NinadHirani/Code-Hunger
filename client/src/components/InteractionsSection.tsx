@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { AiFillLike, AiFillDislike, AiFillStar } from "react-icons/ai";
 import { useQuery } from "@tanstack/react-query";

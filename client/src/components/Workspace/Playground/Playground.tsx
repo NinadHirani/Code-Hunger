@@ -35,6 +35,84 @@ interface ConsoleOutput {
 	message: string;
 }
 
+const dataStructureHelpers = `
+function ListNode(val, next) {
+  this.val = (val === undefined ? 0 : val);
+  this.next = (next === undefined ? null : next);
+}
+
+function TreeNode(val, left, right) {
+  this.val = (val === undefined ? 0 : val);
+  this.left = (left === undefined ? null : left);
+  this.right = (right === undefined ? null : right);
+}
+
+function arrayToLinkedList(arr) {
+  if (!arr || arr.length === 0) return null;
+  const head = new ListNode(arr[0]);
+  let current = head;
+  for (let i = 1; i < arr.length; i++) {
+    current.next = new ListNode(arr[i]);
+    current = current.next;
+  }
+  return head;
+}
+
+function linkedListToArray(head) {
+  const result = [];
+  let current = head;
+  while (current !== null) {
+    result.push(current.val);
+    current = current.next;
+  }
+  return result;
+}
+
+function arrayToTree(arr) {
+  if (!arr || arr.length === 0 || arr[0] === null) return null;
+  const root = new TreeNode(arr[0]);
+  const queue = [root];
+  let i = 1;
+  while (queue.length > 0 && i < arr.length) {
+    const node = queue.shift();
+    if (i < arr.length && arr[i] !== null) {
+      node.left = new TreeNode(arr[i]);
+      queue.push(node.left);
+    }
+    i++;
+    if (i < arr.length && arr[i] !== null) {
+      node.right = new TreeNode(arr[i]);
+      queue.push(node.right);
+    }
+    i++;
+  }
+  return root;
+}
+
+function treeToArray(root) {
+  if (!root) return [];
+  const result = [];
+  const queue = [root];
+  while (queue.length > 0) {
+    const node = queue.shift();
+    if (node) {
+      result.push(node.val);
+      queue.push(node.left);
+      queue.push(node.right);
+    } else {
+      result.push(null);
+    }
+  }
+  while (result.length > 0 && result[result.length - 1] === null) {
+    result.pop();
+  }
+  return result;
+}
+`;
+
+const linkedListProblems = ['reverse-linked-list', 'merge-two-sorted-lists', 'linked-list-cycle', 'remove-nth-node-from-end-of-list'];
+const treeProblems = ['maximum-depth-of-binary-tree', 'invert-binary-tree', 'same-tree', 'symmetric-tree', 'binary-tree-level-order-traversal'];
+
 const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSolved }) => {
 	const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
 	const [userCode, setUserCode] = useState<string>("");
@@ -60,6 +138,9 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 		return match ? match[1] : null;
 	};
 
+	const isLinkedListProblem = linkedListProblems.includes(problemSlug);
+	const isTreeProblem = treeProblems.includes(problemSlug);
+
 	const executeCode = (userCode: string, testCases: any[]): TestResult[] => {
 		const results: TestResult[] = [];
 		const functionName = getFunctionName(userCode);
@@ -78,13 +159,49 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 		for (let i = 0; i < testCases.length; i++) {
 			const testCase = testCases[i];
 			try {
-				const fn = new Function(`
-					${userCode}
-					const input = ${JSON.stringify(testCase.input)};
-					const args = Object.values(input);
-					return ${functionName}(...args);
-				`);
+				let execCode = '';
 				
+				if (isLinkedListProblem) {
+					execCode = `
+						${dataStructureHelpers}
+						${userCode}
+						const input = ${JSON.stringify(testCase.input)};
+						const args = Object.entries(input).map(([key, val]) => {
+							if (key === 'head' || key === 'l1' || key === 'l2' || key === 'list1' || key === 'list2') {
+								return arrayToLinkedList(val);
+							}
+							return val;
+						});
+						const rawResult = ${functionName}(...args);
+						return linkedListToArray(rawResult);
+					`;
+				} else if (isTreeProblem) {
+					execCode = `
+						${dataStructureHelpers}
+						${userCode}
+						const input = ${JSON.stringify(testCase.input)};
+						const args = Object.entries(input).map(([key, val]) => {
+							if (key === 'root' || key === 'p' || key === 'q' || key === 'tree1' || key === 'tree2') {
+								return arrayToTree(val);
+							}
+							return val;
+						});
+						const rawResult = ${functionName}(...args);
+						if (typeof rawResult === 'number' || typeof rawResult === 'boolean') {
+							return rawResult;
+						}
+						return treeToArray(rawResult);
+					`;
+				} else {
+					execCode = `
+						${userCode}
+						const input = ${JSON.stringify(testCase.input)};
+						const args = Object.values(input);
+						return ${functionName}(...args);
+					`;
+				}
+				
+				const fn = new Function(execCode);
 				const result = fn();
 				const expected = testCase.expected;
 				
