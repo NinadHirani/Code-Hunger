@@ -105,18 +105,18 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problemSlug, _s
                 );
         }
 
-        const getDifficultyColor = (difficulty: string) => {
-                switch (difficulty) {
-                        case "Easy":
-                                return "bg-olive text-olive";
-                        case "Medium":
-                                return "bg-dark-yellow text-dark-yellow";
-                        case "Hard":
-                                return "bg-dark-pink text-dark-pink";
-                        default:
-                                return "bg-dark-yellow text-dark-yellow";
-                }
-        };
+	const getDifficultyColor = (difficulty: string) => {
+		switch (difficulty) {
+			case "Easy":
+				return "bg-[rgba(0,184,175,0.15)] text-[#00b8af]";
+			case "Medium":
+				return "bg-[rgba(255,192,30,0.15)] text-[#ffc01e]";
+			case "Hard":
+				return "bg-[rgba(255,55,95,0.15)] text-[#ff375f]";
+			default:
+				return "bg-[rgba(255,192,30,0.15)] text-[#ffc01e]";
+		}
+	};
 
         return (
                 <div className='bg-dark-layer-1'>
@@ -136,7 +136,7 @@ const ProblemDescription: React.FC<ProblemDescriptionProps> = ({ problemSlug, _s
                                                 </div>
                                                 <div className='flex items-center mt-3'>
                                                         <div
-                                                                className={`${getDifficultyColor(problem.difficulty)} inline-block rounded-[21px] bg-opacity-[.15] px-2.5 py-1 text-xs font-medium capitalize `}
+								className={`${getDifficultyColor(problem.difficulty)} inline-block rounded-[21px] px-2.5 py-1 text-xs font-medium capitalize `}
                                                         >
                                                                 {problem.difficulty}
                                                         </div>
@@ -237,13 +237,13 @@ function useGetCurrentProblem(problemSlug: string) {
                                 examples: problem.examples || [],
                                 constraints: problem.constraints
                         });
-                        setProblemDifficultyClass(
-                                problem.difficulty === "Easy"
-                                        ? "bg-olive text-olive"
-                                        : problem.difficulty === "Medium"
-                                        ? "bg-dark-yellow text-dark-yellow"
-                                        : " bg-dark-pink text-dark-pink"
-                        );
+			setProblemDifficultyClass(
+				problem.difficulty === "Easy"
+					? "bg-[rgba(0,184,175,0.15)] text-[#00b8af]"
+					: problem.difficulty === "Medium"
+					? "bg-[rgba(255,192,30,0.15)] text-[#ffc01e]"
+					: "bg-[rgba(255,55,95,0.15)] text-[#ff375f]"
+			);
                         setLoading(false);
                 }
         }, [problem, problemSlug]);
