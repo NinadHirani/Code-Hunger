@@ -22,6 +22,12 @@ export interface IStorage {
   getUserProblem(userId: string, problemId: string): Promise<UserProblem | undefined>;
   createUserProblem(userProblem: InsertUserProblem): Promise<UserProblem>;
   updateUserProblem(userId: string, problemId: string, updates: Partial<UserProblem>): Promise<UserProblem>;
+
+  // User Problem Interactions
+  getUserProblemInteraction(visitorId: string, problemSlug: string): Promise<any>;
+  toggleLike(visitorId: string, problemSlug: string): Promise<any>;
+  toggleDislike(visitorId: string, problemSlug: string): Promise<any>;
+  toggleStar(visitorId: string, problemSlug: string): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
@@ -29,12 +35,14 @@ export class MemStorage implements IStorage {
   private problems: Map<string, Problem>;
   private submissions: Map<string, Submission>;
   private userProblems: Map<string, UserProblem>;
+  private userInteractions: Map<string, { liked: boolean; disliked: boolean; starred: boolean; solved: boolean }>;
 
   constructor() {
     this.users = new Map();
     this.problems = new Map();
     this.submissions = new Map();
     this.userProblems = new Map();
+    this.userInteractions = new Map();
     
     // Initialize with sample problems
     this.initializeProblems();
@@ -553,6 +561,8 @@ The solution set must not contain duplicate subsets. Return the solution in any 
       submissions: insertProblem.submissions || 0,
       acceptance: insertProblem.acceptance || 0,
       accepted: insertProblem.accepted || 0,
+      likes: insertProblem.likes || 0,
+      dislikes: insertProblem.dislikes || 0,
       constraints: insertProblem.constraints || [],
       topics: insertProblem.topics || [],
       createdAt: new Date()
@@ -609,6 +619,89 @@ The solution set must not contain duplicate subsets. Return the solution in any 
     const updated = { ...existing, ...updates };
     this.userProblems.set(key, updated);
     return updated;
+  }
+
+  async getUserProblemInteraction(visitorId: string, problemSlug: string): Promise<any> {
+    const key = `${visitorId}-${problemSlug}`;
+    return this.userInteractions.get(key) || { liked: false, disliked: false, starred: false, solved: false };
+  }
+
+  async toggleLike(visitorId: string, problemSlug: string): Promise<any> {
+    const key = `${visitorId}-${problemSlug}`;
+    const current = this.userInteractions.get(key) || { liked: false, disliked: false, starred: false, solved: false };
+    const wasLiked = current.liked;
+    const wasDisliked = current.disliked;
+
+    current.liked = !wasLiked;
+    if (current.liked && wasDisliked) {
+      current.disliked = false;
+    }
+    this.userInteractions.set(key, current);
+
+    const problem = await this.getProblemBySlug(problemSlug);
+    if (problem) {
+      let likes = problem.likes || 0;
+      let dislikes = problem.dislikes || 0;
+      
+      if (wasLiked) {
+        likes = Math.max(0, likes - 1);
+      } else {
+        likes += 1;
+        if (wasDisliked) {
+          dislikes = Math.max(0, dislikes - 1);
+        }
+      }
+
+      const updatedProblem = { ...problem, likes, dislikes };
+      this.problems.set(problem.id, updatedProblem);
+
+      return { liked: current.liked, disliked: current.disliked, likes, dislikes };
+    }
+
+    return current;
+  }
+
+  async toggleDislike(visitorId: string, problemSlug: string): Promise<any> {
+    const key = `${visitorId}-${problemSlug}`;
+    const current = this.userInteractions.get(key) || { liked: false, disliked: false, starred: false, solved: false };
+    const wasLiked = current.liked;
+    const wasDisliked = current.disliked;
+
+    current.disliked = !wasDisliked;
+    if (current.disliked && wasLiked) {
+      current.liked = false;
+    }
+    this.userInteractions.set(key, current);
+
+    const problem = await this.getProblemBySlug(problemSlug);
+    if (problem) {
+      let likes = problem.likes || 0;
+      let dislikes = problem.dislikes || 0;
+      
+      if (wasDisliked) {
+        dislikes = Math.max(0, dislikes - 1);
+      } else {
+        dislikes += 1;
+        if (wasLiked) {
+          likes = Math.max(0, likes - 1);
+        }
+      }
+
+      const updatedProblem = { ...problem, likes, dislikes };
+      this.problems.set(problem.id, updatedProblem);
+
+      return { liked: current.liked, disliked: current.disliked, likes, dislikes };
+    }
+
+    return current;
+  }
+
+  async toggleStar(visitorId: string, problemSlug: string): Promise<any> {
+    const key = `${visitorId}-${problemSlug}`;
+    const current = this.userInteractions.get(key) || { liked: false, disliked: false, starred: false, solved: false };
+    current.starred = !current.starred;
+    this.userInteractions.set(key, current);
+    return { starred: current.starred };
   }
 }
 

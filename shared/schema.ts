@@ -24,6 +24,8 @@ export const problems = pgTable("problems", {
   acceptance: integer("acceptance").default(0),
   submissions: integer("submissions").default(0),
   accepted: integer("accepted").default(0),
+  likes: integer("likes").default(0),
+  dislikes: integer("dislikes").default(0),
   starterCode: json("starter_code").notNull().default({}), // { javascript: "", python: "", etc }
   testCases: json("test_cases").notNull().default([]),
   createdAt: timestamp("created_at").defaultNow(),
@@ -43,8 +45,11 @@ export const submissions = pgTable("submissions", {
 
 export const userProblems = pgTable("user_problems", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  problemId: varchar("problem_id").notNull().references(() => problems.id),
+  visitorId: varchar("visitor_id").notNull(),
+  problemSlug: text("problem_slug").notNull(),
+  liked: boolean("liked").default(false),
+  disliked: boolean("disliked").default(false),
+  starred: boolean("starred").default(false),
   solved: boolean("solved").default(false),
   attempts: integer("attempts").default(0),
   lastAttemptAt: timestamp("last_attempt_at"),
