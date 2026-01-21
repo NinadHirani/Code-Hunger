@@ -51,64 +51,68 @@ export class MemStorage implements IStorage {
 
   private initializeProblems() {
     const sampleProblems: InsertProblem[] = [
-      {
-        title: "Two Sum",
-        slug: "two-sum",
-        difficulty: "Easy",
-        description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+        {
+          title: "Two Sum",
+          slug: "two-sum",
+          difficulty: "Easy",
+          order: 1,
+          videoId: "8-k1C6ehKuw",
+          description: `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
 
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
 
 You can return the answer in any order.`,
-        examples: [
-          {
-            input: "nums = [2,7,11,15], target = 9",
-            output: "[0,1]",
-            explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]."
-          },
-          {
-            input: "nums = [3,2,4], target = 6",
-            output: "[1,2]"
-          }
-        ],
-        constraints: [
-          "2 ≤ nums.length ≤ 10⁴",
-          "-10⁹ ≤ nums[i] ≤ 10⁹",
-          "-10⁹ ≤ target ≤ 10⁹",
-          "Only one valid answer exists."
-        ],
-        topics: ["Array", "Hash Table"],
-        acceptance: 49,
-        submissions: 5200000,
-        accepted: 2600000,
-        starterCode: {
-          javascript: `function twoSum(nums, target) {
+          examples: [
+            {
+              input: "nums = [2,7,11,15], target = 9",
+              output: "[0,1]",
+              explanation: "Because nums[0] + nums[1] == 9, we return [0, 1]."
+            },
+            {
+              input: "nums = [3,2,4], target = 6",
+              output: "[1,2]"
+            }
+          ],
+          constraints: [
+            "2 ≤ nums.length ≤ 10⁴",
+            "-10⁹ ≤ nums[i] ≤ 10⁹",
+            "-10⁹ ≤ target ≤ 10⁹",
+            "Only one valid answer exists."
+          ],
+          topics: ["Array", "Hash Table"],
+          acceptance: 49,
+          submissions: 5200000,
+          accepted: 2600000,
+          starterCode: {
+            javascript: `function twoSum(nums, target) {
     // Write your code here
 };`,
-          python: `def twoSum(nums, target):
+            python: `def twoSum(nums, target):
     # Write your code here
     pass`,
-          java: `class Solution {
+            java: `class Solution {
     public int[] twoSum(int[] nums, int target) {
         // Write your code here
     }
 }`,
-          cpp: `class Solution {
+            cpp: `class Solution {
 public:
     vector<int> twoSum(vector<int>& nums, int target) {
         // Write your code here
     }
 };`
+          },
+          testCases: [
+            { input: { nums: [2, 7, 11, 15], target: 9 }, expected: [0, 1] },
+            { input: { nums: [3, 2, 4], target: 6 }, expected: [1, 2] }
+          ]
         },
-        testCases: [
-          { input: { nums: [2, 7, 11, 15], target: 9 }, expected: [0, 1] },
-          { input: { nums: [3, 2, 4], target: 6 }, expected: [1, 2] }
-        ]
-      },
       {
         title: "Reverse Linked List",
         slug: "reverse-linked-list",
         difficulty: "Easy",
+        order: 2,
+        videoId: null,
         description: `Given the head of a singly linked list, reverse the list, and return the reversed list.`,
         examples: [
           {
@@ -195,6 +199,8 @@ public:
         title: "Jump Game",
         slug: "jump-game",
         difficulty: "Medium",
+        order: 3,
+        videoId: null,
         description: `You are given an integer array nums. You are initially positioned at the first index and each element in the array represents your maximum jump length at that position.
 
 Return true if you can reach the last index, or false otherwise.`,
@@ -247,6 +253,8 @@ public:
         title: "Valid Parentheses",
         slug: "valid-parentheses",
         difficulty: "Easy",
+        order: 4,
+        videoId: "xty7fr-k0TU",
         description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
 
 An input string is valid if:

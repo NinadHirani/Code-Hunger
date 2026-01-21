@@ -28,6 +28,8 @@ export const problems = pgTable("problems", {
   dislikes: integer("dislikes").default(0),
   starterCode: json("starter_code").notNull().default({}), // { javascript: "", python: "", etc }
   testCases: json("test_cases").notNull().default([]),
+  order: integer("order").default(0),
+  videoId: text("video_id"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
