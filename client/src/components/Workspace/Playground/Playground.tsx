@@ -1,9 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import PreferenceNav from "./PreferenceNav/PreferenceNav";
+import { Language } from "./PreferenceNav/PreferenceNav";
 import Split from "react-split";
 import CodeMirror from "@uiw/react-codemirror";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
+import { python } from "@codemirror/lang-python";
+import { java } from "@codemirror/lang-java";
+import { cpp } from "@codemirror/lang-cpp";
 import EditorFooter from "./EditorFooter";
 import { toast } from "react-toastify";
 import useLocalStorage from "@/hooks/useLocalStorage";
@@ -35,92 +39,85 @@ interface ConsoleOutput {
 	message: string;
 }
 
-const dataStructureHelpers = `
-function ListNode(val, next) {
-  this.val = (val === undefined ? 0 : val);
-  this.next = (next === undefined ? null : next);
+interface Problem {
+	id: string;
+	title: string;
+	slug: string;
+	difficulty: string;
+	description: string;
+	examples: { input: string; output: string; explanation?: string }[];
+	constraints: string[];
+	topics: string[];
+	starterCode: Record<string, string>;
+	testCases: { input: Record<string, unknown>; expected: unknown }[];
 }
 
-function TreeNode(val, left, right) {
-  this.val = (val === undefined ? 0 : val);
-  this.left = (left === undefined ? null : left);
-  this.right = (right === undefined ? null : right);
-}
+type UserCodeStore = Record<Language, string>;
 
-function arrayToLinkedList(arr) {
-  if (!arr || arr.length === 0) return null;
-  const head = new ListNode(arr[0]);
-  let current = head;
-  for (let i = 1; i < arr.length; i++) {
-    current.next = new ListNode(arr[i]);
-    current = current.next;
-  }
-  return head;
-}
-
-function linkedListToArray(head) {
-  const result = [];
-  let current = head;
-  while (current !== null) {
-    result.push(current.val);
-    current = current.next;
-  }
-  return result;
-}
-
-function arrayToTree(arr) {
-  if (!arr || arr.length === 0 || arr[0] === null) return null;
-  const root = new TreeNode(arr[0]);
-  const queue = [root];
-  let i = 1;
-  while (queue.length > 0 && i < arr.length) {
-    const node = queue.shift();
-    if (i < arr.length && arr[i] !== null) {
-      node.left = new TreeNode(arr[i]);
-      queue.push(node.left);
-    }
-    i++;
-    if (i < arr.length && arr[i] !== null) {
-      node.right = new TreeNode(arr[i]);
-      queue.push(node.right);
-    }
-    i++;
-  }
-  return root;
-}
-
-function treeToArray(root) {
-  if (!root) return [];
-  const result = [];
-  const queue = [root];
-  while (queue.length > 0) {
-    const node = queue.shift();
-    if (node) {
-      result.push(node.val);
-      queue.push(node.left);
-      queue.push(node.right);
-    } else {
-      result.push(null);
-    }
-  }
-  while (result.length > 0 && result[result.length - 1] === null) {
-    result.pop();
-  }
-  return result;
-}
-`;
-
-const linkedListProblems = ['reverse-linked-list', 'merge-two-sorted-lists', 'linked-list-cycle', 'remove-nth-node-from-end-of-list'];
-const treeProblems = ['maximum-depth-of-binary-tree', 'invert-binary-tree', 'same-tree', 'symmetric-tree', 'binary-tree-level-order-traversal'];
+const getLanguageExtension = (lang: Language) => {
+	switch (lang) {
+		case "python": return python();
+		case "java": return java();
+		case "cpp": return cpp();
+		default: return javascript();
+	}
+};
 
 const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSolved }) => {
+	const [selectedLanguage, setSelectedLanguage] = useState<Language>("javascript");
 	const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
-	const [userCode, setUserCode] = useState<string>("");
-	const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
-	const [isRunning, setIsRunning] = useState(false);
 	const [showConsole, setShowConsole] = useState(false);
-	const [consoleOutput, setConsoleOutput] = useState<ConsoleOutput[]>([]);
 	const [testResults, setTestResults] = useState<TestResult[]>([]);
+	const [consoleOutput, setConsoleOutput] = useState<ConsoleOutput[]>([]);
+	const [isRunning, setIsRunning] = useState(false);
+
+	const { data: problem, isLoading } = useQuery<Problem>({
+		queryKey: [`/api/problems/${problemSlug}`],
+	});
+
+	const [fontSize] = useLocalStorage<string>("lcc-fontSize", "14px");
+
+	const getDefaultCode = (lang: Language): string => {
+		if (!problem?.starterCode) return "";
+		return problem.starterCode[lang] || problem.starterCode.javascript || "";
+	};
+
+	const [userCode, setUserCode] = useLocalStorage<UserCodeStore>(
+		`code-${problemSlug}`,
+		{
+			javascript: "",
+			python: "",
+			java: "",
+			cpp: ""
+		}
+	);
+
+	useEffect(() => {
+		if (problem?.starterCode) {
+			setUserCode((prev: UserCodeStore) => {
+				const updated = { ...prev };
+				(["javascript", "python", "java", "cpp"] as Language[]).forEach((lang) => {
+					if (!updated[lang] || updated[lang].trim() === "") {
+						updated[lang] = problem.starterCode[lang] || "";
+					}
+				});
+				return updated;
+			});
+		}
+	}, [problem?.starterCode, setUserCode]);
+
+	const currentCode = userCode[selectedLanguage] || getDefaultCode(selectedLanguage);
+
+	const handleCodeChange = (value: string) => {
+		setUserCode((prev: UserCodeStore) => ({
+			...prev,
+			[selectedLanguage]: value
+		}));
+	};
+
+	const handleLanguageChange = (lang: Language) => {
+		setSelectedLanguage(lang);
+	};
 
 	const [settings, setSettings] = useState<ISettings>({
 		fontSize: fontSize,
@@ -128,365 +125,230 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 		dropdownIsOpen: false,
 	});
 
-	const { data: problem } = useQuery({
-		queryKey: [`/api/problems/${problemSlug}`],
-		enabled: !!problemSlug
-	});
-
-	const getFunctionName = (code: string): string | null => {
-		const match = code.match(/function\s+(\w+)\s*\(/);
-		return match ? match[1] : null;
-	};
-
-	const isLinkedListProblem = linkedListProblems.includes(problemSlug);
-	const isTreeProblem = treeProblems.includes(problemSlug);
-
-	const executeCode = (userCode: string, testCases: any[]): TestResult[] => {
-		const results: TestResult[] = [];
-		const functionName = getFunctionName(userCode);
-		
-		if (!functionName) {
-			return [{
-				testCase: 0,
-				passed: false,
-				input: "",
-				expected: "",
-				actual: "",
-				error: "Could not find function definition. Make sure your code defines a function."
-			}];
-		}
-
-		for (let i = 0; i < testCases.length; i++) {
-			const testCase = testCases[i];
-			try {
-				let execCode = '';
-				
-				if (isLinkedListProblem) {
-					execCode = `
-						${dataStructureHelpers}
-						${userCode}
-						const input = ${JSON.stringify(testCase.input)};
-						const args = Object.entries(input).map(([key, val]) => {
-							if (key === 'head' || key === 'l1' || key === 'l2' || key === 'list1' || key === 'list2') {
-								return arrayToLinkedList(val);
-							}
-							return val;
-						});
-						const rawResult = ${functionName}(...args);
-						return linkedListToArray(rawResult);
-					`;
-				} else if (isTreeProblem) {
-					execCode = `
-						${dataStructureHelpers}
-						${userCode}
-						const input = ${JSON.stringify(testCase.input)};
-						const args = Object.entries(input).map(([key, val]) => {
-							if (key === 'root' || key === 'p' || key === 'q' || key === 'tree1' || key === 'tree2') {
-								return arrayToTree(val);
-							}
-							return val;
-						});
-						const rawResult = ${functionName}(...args);
-						if (typeof rawResult === 'number' || typeof rawResult === 'boolean') {
-							return rawResult;
-						}
-						return treeToArray(rawResult);
-					`;
-				} else {
-					execCode = `
-						${userCode}
-						const input = ${JSON.stringify(testCase.input)};
-						const args = Object.values(input);
-						return ${functionName}(...args);
-					`;
-				}
-				
-				const fn = new Function(execCode);
-				const result = fn();
-				const expected = testCase.expected;
-				
-				const isEqual = JSON.stringify(result) === JSON.stringify(expected) ||
-					(Array.isArray(result) && Array.isArray(expected) && 
-					 result.length === expected.length && 
-					 result.every((v, idx) => JSON.stringify(v) === JSON.stringify(expected[idx])));
-				
-				results.push({
-					testCase: i + 1,
-					passed: isEqual,
-					input: JSON.stringify(testCase.input),
-					expected: JSON.stringify(expected),
-					actual: JSON.stringify(result),
-				});
-			} catch (error: any) {
-				results.push({
-					testCase: i + 1,
-					passed: false,
-					input: JSON.stringify(testCase.input),
-					expected: JSON.stringify(testCase.expected),
-					actual: "Error",
-					error: error.message || "Runtime error occurred"
-				});
-			}
-		}
-		
-		return results;
-	};
-
 	const handleRun = async () => {
-		if (!problem || !problem.testCases) {
-			toast.error("Problem test cases not found", {
-				position: "top-center",
-				autoClose: 3000,
-				theme: "dark",
-			});
+		if (!problem?.testCases) {
+			toast.error("No test cases available");
 			return;
 		}
 
 		setIsRunning(true);
 		setShowConsole(true);
-		setConsoleOutput([{ type: "info", message: "Running test cases..." }]);
+		setConsoleOutput([{ type: "info", message: `Running ${selectedLanguage.toUpperCase()} code...` }]);
+		setTestResults([]);
 
-		await new Promise(resolve => setTimeout(resolve, 500));
-
-		const results = executeCode(userCode, problem.testCases as any[]);
-		setTestResults(results);
-
-		const newOutput: ConsoleOutput[] = [{ type: "info", message: "Test Results:" }];
-		
-		results.forEach((result) => {
-			if (result.error) {
-				newOutput.push({
-					type: "error",
-					message: `Test Case ${result.testCase}: Error - ${result.error}`
-				});
-			} else if (result.passed) {
-				newOutput.push({
-					type: "success",
-					message: `Test Case ${result.testCase}: Passed`
-				});
-			} else {
-				newOutput.push({
-					type: "error",
-					message: `Test Case ${result.testCase}: Failed`
-				});
-				newOutput.push({
-					type: "result",
-					message: `  Input: ${result.input}`
-				});
-				newOutput.push({
-					type: "result",
-					message: `  Expected: ${result.expected}`
-				});
-				newOutput.push({
-					type: "error",
-					message: `  Your Output: ${result.actual}`
-				});
-			}
-		});
-
-		const allPassed = results.every(r => r.passed);
-		if (allPassed) {
-			newOutput.push({ type: "success", message: "\nAll test cases passed!" });
-		} else {
-			const passedCount = results.filter(r => r.passed).length;
-			newOutput.push({ 
-				type: "error", 
-				message: `\n${passedCount}/${results.length} test cases passed.` 
+		try {
+			const response = await fetch("/api/execute", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					language: selectedLanguage,
+					code: currentCode,
+					testCases: problem.testCases,
+					problemSlug: problemSlug
+				})
 			});
-		}
 
-		setConsoleOutput(newOutput);
-		setIsRunning(false);
+			const data = await response.json();
+
+			if (data.error) {
+				setConsoleOutput([{ type: "error", message: data.error }]);
+				toast.error("Execution failed");
+			} else {
+				const results = data.results as TestResult[];
+				setTestResults(results);
+
+				const passed = results.filter(r => r.passed).length;
+				const total = results.length;
+
+				if (passed === total) {
+					setConsoleOutput([{ type: "success", message: `All ${total} test cases passed!` }]);
+					toast.success("All test cases passed!", { position: "top-center", autoClose: 2000 });
+				} else {
+					setConsoleOutput([{ type: "error", message: `${passed}/${total} test cases passed` }]);
+					toast.error(`${total - passed} test case(s) failed`, { position: "top-center", autoClose: 2000 });
+				}
+			}
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : "Execution failed";
+			setConsoleOutput([{ type: "error", message: errorMessage }]);
+			toast.error("Failed to execute code");
+		} finally {
+			setIsRunning(false);
+		}
 	};
 
 	const handleSubmit = async () => {
-		if (!problem || !problem.testCases) {
-			toast.error("Problem not found", {
-				position: "top-center",
-				autoClose: 3000,
-				theme: "dark",
-			});
+		if (!problem?.testCases) {
+			toast.error("No test cases available");
 			return;
 		}
 
 		setIsRunning(true);
 		setShowConsole(true);
-		setConsoleOutput([{ type: "info", message: "Submitting solution..." }]);
+		setConsoleOutput([{ type: "info", message: `Submitting ${selectedLanguage.toUpperCase()} solution...` }]);
 
-		await new Promise(resolve => setTimeout(resolve, 500));
-
-		const results = executeCode(userCode, problem.testCases as any[]);
-		setTestResults(results);
-
-		const allPassed = results.every(r => r.passed);
-
-		if (allPassed) {
-			toast.success("Congrats! All tests passed!", {
-				position: "top-center",
-				autoClose: 3000,
-				theme: "dark",
-			});
-			setSuccess(true);
-			setTimeout(() => {
-				setSuccess(false);
-			}, 4000);
-
-			const solvedProblems = JSON.parse(localStorage.getItem("solvedProblems") || "[]");
-			if (!solvedProblems.includes(problemSlug)) {
-				solvedProblems.push(problemSlug);
-				localStorage.setItem("solvedProblems", JSON.stringify(solvedProblems));
-			}
-			setSolved(true);
-
-			setConsoleOutput([
-				{ type: "success", message: "Accepted!" },
-				{ type: "success", message: `All ${results.length} test cases passed.` }
-			]);
-		} else {
-			const passedCount = results.filter(r => r.passed).length;
-			toast.error(`${passedCount}/${results.length} test cases passed`, {
-				position: "top-center",
-				autoClose: 3000,
-				theme: "dark",
+		try {
+			const response = await fetch("/api/execute", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					language: selectedLanguage,
+					code: currentCode,
+					testCases: problem.testCases,
+					problemSlug: problemSlug
+				})
 			});
 
-			const newOutput: ConsoleOutput[] = [
-				{ type: "error", message: "Wrong Answer" },
-				{ type: "info", message: `${passedCount}/${results.length} test cases passed.` },
-				{ type: "info", message: "" }
-			];
+			const data = await response.json();
 
-			const firstFailed = results.find(r => !r.passed);
-			if (firstFailed) {
-				if (firstFailed.error) {
-					newOutput.push({ type: "error", message: `Runtime Error: ${firstFailed.error}` });
+			if (data.error) {
+				setConsoleOutput([{ type: "error", message: data.error }]);
+				toast.error("Submission failed");
+			} else {
+				const results = data.results as TestResult[];
+				setTestResults(results);
+
+				const allPassed = results.every(r => r.passed);
+
+				if (allPassed) {
+					setConsoleOutput([{ type: "success", message: "Accepted! All test cases passed." }]);
+					toast.success("Congratulations! Solution accepted!", { position: "top-center", autoClose: 3000 });
+					setSuccess(true);
+					setSolved(true);
 				} else {
-					newOutput.push({ type: "result", message: `Failed Test Case ${firstFailed.testCase}:` });
-					newOutput.push({ type: "result", message: `Input: ${firstFailed.input}` });
-					newOutput.push({ type: "result", message: `Expected: ${firstFailed.expected}` });
-					newOutput.push({ type: "error", message: `Your Output: ${firstFailed.actual}` });
+					const failed = results.find(r => !r.passed);
+					setConsoleOutput([{ type: "error", message: `Wrong Answer on test case ${failed?.testCase}` }]);
+					toast.error("Wrong Answer", { position: "top-center", autoClose: 2000 });
 				}
 			}
-
-			setConsoleOutput(newOutput);
+		} catch (error) {
+			const errorMessage = error instanceof Error ? error.message : "Submission failed";
+			setConsoleOutput([{ type: "error", message: errorMessage }]);
+			toast.error("Failed to submit solution");
+		} finally {
+			setIsRunning(false);
 		}
-
-		setIsRunning(false);
 	};
 
-	useEffect(() => {
-		if (problem && problem.starterCode) {
-			const code = localStorage.getItem(`code-${problemSlug}`);
-			const starterCode = (problem.starterCode as Record<string, string>);
-			setUserCode(code ? JSON.parse(code) : starterCode.javascript || "");
-		}
-	}, [problemSlug, problem]);
+	const languageExtension = useMemo(() => getLanguageExtension(selectedLanguage), [selectedLanguage]);
 
-	const onChange = (value: string) => {
-		setUserCode(value);
-		localStorage.setItem(`code-${problemSlug}`, JSON.stringify(value));
-	};
-
-	if (!problem) {
-		return <div>Loading...</div>;
+	if (isLoading) {
+		return <div className="flex items-center justify-center h-full text-white">Loading...</div>;
 	}
 
 	return (
 		<div className='flex flex-col bg-dark-layer-1 relative overflow-x-hidden'>
-			<PreferenceNav settings={settings} setSettings={setSettings} />
+			<PreferenceNav 
+				settings={settings} 
+				setSettings={setSettings}
+				selectedLanguage={selectedLanguage}
+				onLanguageChange={handleLanguageChange}
+			/>
 
 			<Split className='h-[calc(100vh-94px)]' direction='vertical' sizes={[60, 40]} minSize={60}>
 				<div className='w-full overflow-auto'>
 					<CodeMirror
-						value={userCode}
+						value={currentCode}
 						theme={vscodeDark}
-						onChange={onChange}
-						extensions={[javascript()]}
+						onChange={handleCodeChange}
+						extensions={[languageExtension]}
 						style={{ fontSize: settings.fontSize }}
 					/>
 				</div>
-				<div className='w-full px-5 overflow-auto'>
+				<div className='w-full px-5 overflow-auto bg-dark-layer-1'>
 					<div className='flex h-10 items-center space-x-6'>
-						<div 
-							className={`relative flex h-full flex-col justify-center cursor-pointer ${!showConsole ? 'text-white' : 'text-gray-500'}`}
-							onClick={() => setShowConsole(false)}
-						>
-							<div className='text-sm font-medium leading-5'>Testcases</div>
-							{!showConsole && <hr className='absolute bottom-0 h-0.5 w-full rounded-full border-none bg-white' />}
+						<div className='relative flex h-full flex-col justify-center cursor-pointer'>
+							<div className='text-sm font-medium leading-5 text-white'>Testcases</div>
+							<hr className='absolute bottom-0 h-0.5 w-full rounded-full border-none bg-white' />
 						</div>
-						<div 
-							className={`relative flex h-full flex-col justify-center cursor-pointer ${showConsole ? 'text-white' : 'text-gray-500'}`}
-							onClick={() => setShowConsole(true)}
-						>
-							<div className='text-sm font-medium leading-5'>Console</div>
-							{showConsole && <hr className='absolute bottom-0 h-0.5 w-full rounded-full border-none bg-white' />}
-						</div>
+						{showConsole && (
+							<div 
+								className='relative flex h-full flex-col justify-center cursor-pointer'
+								onClick={() => setShowConsole(false)}
+							>
+								<div className='text-sm font-medium leading-5 text-gray-400 hover:text-white'>Console</div>
+							</div>
+						)}
 					</div>
 
 					{!showConsole ? (
-						<>
-							<div className='flex'>
-								{problem.examples && (problem.examples as any[]).map((example, index) => (
+						<div className='flex flex-col'>
+							<div className='flex gap-2 mt-2 flex-wrap'>
+								{problem?.testCases?.map((_, index: number) => (
 									<div
-										className='mr-2 items-start mt-2 '
+										className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap ${
+											activeTestCaseId === index ? "text-white" : "text-gray-500"
+										}`}
 										key={index}
 										onClick={() => setActiveTestCaseId(index)}
 									>
-										<div className='flex flex-wrap items-center gap-y-4'>
-											<div
-												className={`font-medium items-center transition-all focus:outline-none inline-flex bg-dark-fill-3 hover:bg-dark-fill-2 relative rounded-lg px-4 py-1 cursor-pointer whitespace-nowrap
-												${activeTestCaseId === index ? "text-white" : "text-gray-500"}
-											`}
-											>
-												Case {index + 1}
-											</div>
-										</div>
+										Case {index + 1}
+										{testResults[index] && (
+											<span className={`ml-2 text-xs ${testResults[index].passed ? 'text-dark-green-s' : 'text-dark-pink'}`}>
+												{testResults[index].passed ? '✓' : '✗'}
+											</span>
+										)}
 									</div>
 								))}
 							</div>
 
-							{problem.examples && (problem.examples as any[])[activeTestCaseId] && (
-								<div className='font-semibold my-4'>
-									<p className='text-sm font-medium mt-4 text-white'>Input:</p>
-									<div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2'>
-										{(problem.examples as any[])[activeTestCaseId].input}
-									</div>
-									<p className='text-sm font-medium mt-4 text-white'>Output:</p>
-									<div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2'>
-										{(problem.examples as any[])[activeTestCaseId].output}
-									</div>
+							<div className='font-semibold my-4'>
+								<p className='text-sm font-medium mt-4 text-white'>Input:</p>
+								<div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2 font-mono text-sm'>
+									{problem?.testCases && problem.testCases[activeTestCaseId] && (
+										<pre className="whitespace-pre-wrap">
+											{JSON.stringify(problem.testCases[activeTestCaseId].input, null, 2)}
+										</pre>
+									)}
 								</div>
-							)}
-						</>
+								<p className='text-sm font-medium mt-4 text-white'>Expected Output:</p>
+								<div className='w-full cursor-text rounded-lg border px-3 py-[10px] bg-dark-fill-3 border-transparent text-white mt-2 font-mono text-sm'>
+									{problem?.testCases && problem.testCases[activeTestCaseId] && (
+										<pre className="whitespace-pre-wrap">
+											{JSON.stringify(problem.testCases[activeTestCaseId].expected, null, 2)}
+										</pre>
+									)}
+								</div>
+								{testResults[activeTestCaseId] && (
+									<>
+										<p className='text-sm font-medium mt-4 text-white'>Your Output:</p>
+										<div className={`w-full cursor-text rounded-lg border px-3 py-[10px] mt-2 font-mono text-sm ${
+											testResults[activeTestCaseId].passed 
+												? 'bg-dark-green-s/20 border-dark-green-s text-dark-green-s' 
+												: 'bg-dark-pink/20 border-dark-pink text-dark-pink'
+										}`}>
+											<pre className="whitespace-pre-wrap">
+												{testResults[activeTestCaseId].error || testResults[activeTestCaseId].actual}
+											</pre>
+										</div>
+									</>
+								)}
+							</div>
+						</div>
 					) : (
-						<div className='mt-4 font-mono text-sm bg-dark-fill-3 rounded-lg p-4 min-h-[150px] max-h-[300px] overflow-auto'>
-							{consoleOutput.length === 0 ? (
-								<div className='text-gray-500'>Run your code to see output here...</div>
-							) : (
-								consoleOutput.map((output, index) => (
-									<div
-										key={index}
-										className={`${
-											output.type === "success" ? "text-green-500" :
-											output.type === "error" ? "text-red-500" :
-											output.type === "info" ? "text-gray-400" :
-											"text-white"
+						<div className='flex flex-col mt-4'>
+							<div className='bg-dark-fill-3 rounded-lg p-4 font-mono text-sm'>
+								{consoleOutput.map((output, index) => (
+									<div 
+										key={index} 
+										className={`mb-2 ${
+											output.type === 'error' ? 'text-dark-pink' : 
+											output.type === 'success' ? 'text-dark-green-s' : 
+											'text-white'
 										}`}
 									>
 										{output.message}
 									</div>
-								))
-							)}
+								))}
+							</div>
 						</div>
 					)}
 				</div>
 			</Split>
 			<EditorFooter 
-				handleRun={handleRun}
-				handleSubmit={handleSubmit}
+				handleRun={handleRun} 
+				handleSubmit={handleSubmit} 
 				isRunning={isRunning}
-				showConsole={showConsole}
-				onToggleConsole={() => setShowConsole(!showConsole)}
 			/>
 		</div>
 	);

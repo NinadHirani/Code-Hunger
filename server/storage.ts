@@ -87,7 +87,18 @@ You can return the answer in any order.`,
 };`,
           python: `def twoSum(nums, target):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { nums: [2, 7, 11, 15], target: 9 }, expected: [0, 1] },
@@ -213,7 +224,18 @@ Return true if you can reach the last index, or false otherwise.`,
 };`,
           python: `def canJump(nums):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public boolean canJump(int[] nums) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { nums: [2, 3, 1, 1, 4] }, expected: true },
@@ -263,7 +285,18 @@ An input string is valid if:
 };`,
           python: `def validParentheses(s):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public boolean validParentheses(String s) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    bool validParentheses(string s) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { s: "()" }, expected: true },
@@ -320,7 +353,18 @@ Given matrix, an m x n matrix, and target, return true if target is in the matri
 };`,
           python: `def searchMatrix(matrix, target):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { matrix: [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target: 3 }, expected: true },
@@ -364,7 +408,18 @@ Notice that you may not slant the container.`,
 };`,
           python: `def maxArea(height):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public int maxArea(int[] height) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { height: [1,8,6,2,5,4,8,3,7] }, expected: 49 },
@@ -403,7 +458,18 @@ Notice that you may not slant the container.`,
 };`,
           python: `def merge(intervals):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public int[][] merge(int[][] intervals) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { intervals: [[1,3],[2,6],[8,10],[15,18]] }, expected: [[1,6],[8,10],[15,18]] },
@@ -535,7 +601,18 @@ Return the maximum profit you can achieve from this transaction. If you cannot a
 };`,
           python: `def maxProfit(prices):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public int maxProfit(int[] prices) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { prices: [7,1,5,3,6,4] }, expected: 5 },
@@ -574,7 +651,18 @@ The solution set must not contain duplicate subsets. Return the solution in any 
 };`,
           python: `def subsets(nums):
     # Write your code here
-    pass`
+    pass`,
+          java: `class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        // Write your code here
+    }
+}`,
+          cpp: `class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        // Write your code here
+    }
+};`
         },
         testCases: [
           { input: { nums: [1,2,3] }, expected: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]] },
