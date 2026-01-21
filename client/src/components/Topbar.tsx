@@ -35,10 +35,13 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 	};
 
 	return (
-		<nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-dark-layer-1 text-dark-gray-7'>
+		<nav className='relative flex h-[60px] w-full shrink-0 items-center px-6 bg-dark-layer-1/95 backdrop-blur-md text-dark-gray-7 border-b border-dark-divider-border-2/50'>
 			<div className={`flex w-full items-center justify-between ${!problemPage ? "max-w-[1200px] mx-auto" : ""}`}>
-				<Link href='/' className='h-[22px] flex-1'>
-					<div className="text-brand-orange text-2xl font-bold">Code Hunger</div>
+				<Link href='/' className='flex items-center gap-3 flex-1'>
+					<div className="w-9 h-9 bg-gradient-to-br from-brand-orange to-dark-yellow rounded-lg flex items-center justify-center shadow-lg shadow-brand-orange/20">
+						<span className="text-white font-bold text-lg">CH</span>
+					</div>
+					<div className="text-white text-xl font-bold tracking-tight">Code <span className="text-brand-orange">Hunger</span></div>
 				</Link>
 
 				{problemPage && (

@@ -81,8 +81,8 @@ export default function InteractionsSection() {
   }
 
   return (
-    <div className="mb-8 bg-dark-layer-1 rounded-lg overflow-hidden">
-      <div className="flex border-b border-dark-fill-3">
+    <div className="mb-10 bg-dark-layer-1/80 backdrop-blur-sm rounded-2xl border border-dark-divider-border-2 overflow-hidden shadow-lg shadow-black/10">
+      <div className="flex border-b border-dark-divider-border-2/50">
         {tabs.map(tab => {
           const Icon = tab.icon;
           const count = interactions.filter((i: Interaction) => {
@@ -96,44 +96,53 @@ export default function InteractionsSection() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
+              className={`flex items-center gap-2 px-5 py-4 text-sm font-medium transition-all duration-200 relative ${
                 activeTab === tab.id
-                  ? 'bg-dark-fill-3 text-white border-b-2 border-dark-blue-s'
-                  : 'text-dark-gray-6 hover:text-white hover:bg-dark-fill-2'
+                  ? 'text-white bg-dark-fill-3/50'
+                  : 'text-dark-gray-6 hover:text-white hover:bg-dark-fill-2/50'
               }`}
             >
-              <Icon className={activeTab === tab.id ? tab.color : ''} />
+              <Icon className={`text-lg ${activeTab === tab.id ? tab.color : ''}`} />
               {tab.label}
               {count > 0 && (
-                <span className="ml-1 px-1.5 py-0.5 text-xs bg-dark-fill-2 rounded-full">
+                <span className="ml-1 px-2 py-0.5 text-xs bg-brand-orange/20 text-brand-orange rounded-full font-semibold">
                   {count}
                 </span>
+              )}
+              {activeTab === tab.id && (
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-brand-orange to-dark-yellow" />
               )}
             </button>
           );
         })}
       </div>
       
-      <div className="p-4">
+      <div className="p-5">
         {filteredProblems.length === 0 ? (
-          <p className="text-dark-gray-6 text-sm text-center py-4">
+          <p className="text-dark-gray-6 text-sm text-center py-6">
             No {activeTab} problems yet. Start exploring problems!
           </p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-3">
             {filteredProblems.map((problem: Interaction) => (
               <Link key={problem.problemSlug} href={`/problems/${problem.problemSlug}`}>
-                <div className="flex items-center justify-between p-3 bg-dark-fill-3 rounded-lg hover:bg-dark-fill-2 transition-colors cursor-pointer">
-                  <div className="flex items-center gap-3">
-                    <span className="text-white">{problem.problemTitle}</span>
-                    <span className={`text-xs ${getDifficultyColor(problem.difficulty)}`}>
+                <div className="flex items-center justify-between p-4 bg-dark-fill-3/30 rounded-xl hover:bg-dark-fill-2/60 transition-all duration-200 cursor-pointer border border-transparent hover:border-dark-divider-border-2/50 group">
+                  <div className="flex items-center gap-4">
+                    <span className="text-white font-medium group-hover:text-brand-orange transition-colors">{problem.problemTitle}</span>
+                    <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                      problem.difficulty === 'Easy' 
+                        ? 'bg-dark-green-s/20 text-dark-green-s' 
+                        : problem.difficulty === 'Medium' 
+                        ? 'bg-dark-yellow/20 text-dark-yellow' 
+                        : 'bg-dark-pink/20 text-dark-pink'
+                    }`}>
                       {problem.difficulty}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {problem.starred && <AiFillStar className="text-yellow-500" />}
-                    {problem.liked && <AiFillLike className="text-blue-500" />}
-                    {problem.disliked && <AiFillDislike className="text-red-500" />}
+                  <div className="flex items-center gap-3">
+                    {problem.starred && <AiFillStar className="text-yellow-500 text-lg" />}
+                    {problem.liked && <AiFillLike className="text-blue-500 text-lg" />}
+                    {problem.disliked && <AiFillDislike className="text-red-500 text-lg" />}
                   </div>
                 </div>
               </Link>
