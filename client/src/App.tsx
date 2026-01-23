@@ -23,6 +23,7 @@ function Router() {
       <Route path="/contests/:id" component={ContestDetails} />
       <Route path="/profile" component={Profile} />
       <Route path="/problems/:slug" component={ProblemPage} />
+      <Route path="/search" component={Home} />
       <Route component={NotFound} />
     </Switch>
   );

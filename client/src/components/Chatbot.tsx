@@ -167,6 +167,17 @@ export function Chatbot() {
       </AnimatePresence>
 
       <motion.button
+        animate={{
+          boxShadow: [
+            "0 0 0 0px rgba(234, 136, 52, 0.4)",
+            "0 0 0 15px rgba(234, 136, 52, 0)",
+          ],
+        }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => {
