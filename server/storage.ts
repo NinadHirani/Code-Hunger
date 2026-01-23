@@ -224,62 +224,274 @@ public:
         { input: { head: [] }, expected: [] }
       ]
     },
-    {
-      title: "Jump Game",
-      slug: "jump-game",
-      difficulty: "Medium",
-      order: 3,
-      videoId: "Yan0cv2cUCc",
-      description: `You are given an integer array nums. You are initially positioned at the first index and each element in the array represents your maximum jump length at that position.
+      {
+        title: "Jump Game",
+        slug: "jump-game",
+        difficulty: "Medium",
+        order: 3,
+        videoId: "Yan0cv2cUCc",
+        description: `You are given an integer array nums. You are initially positioned at the first index and each element in the array represents your maximum jump length at that position.
 
 Return true if you can reach the last index, or false otherwise.`,
-      examples: [
-        {
-          input: "nums = [2,3,1,1,4]",
-          output: "true",
-          explanation: "Jump 1 step from index 0 to 1, then 3 steps to the last index."
-        },
-        {
-          input: "nums = [3,2,1,0,4]",
-          output: "false",
-          explanation: "You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index."
-        }
-      ],
-      constraints: [
-        "1 <= nums.length <= 10^4",
-        "0 <= nums[i] <= 10^5"
-      ],
-      topics: ["Array", "Dynamic Programming", "Greedy"],
-      acceptance: 38,
-      submissions: 2100000,
-      accepted: 798000,
-      starterCode: {
-        javascript: `function canJump(nums) {
+        examples: [
+          {
+            input: "nums = [2,3,1,1,4]",
+            output: "true",
+            explanation: "Jump 1 step from index 0 to 1, then 3 steps to the last index."
+          },
+          {
+            input: "nums = [3,2,1,0,4]",
+            output: "false",
+            explanation: "You will always arrive at index 3 no matter what. Its maximum jump length is 0, which makes it impossible to reach the last index."
+          }
+        ],
+        constraints: [
+          "1 <= nums.length <= 10^4",
+          "0 <= nums[i] <= 10^5"
+        ],
+        topics: ["Array", "Dynamic Programming", "Greedy"],
+        acceptance: 38,
+        submissions: 2100000,
+        accepted: 798000,
+        starterCode: {
+          javascript: `function canJump(nums) {
     // Write your code here
 };`,
-          python: `class Solution:
+            python: `class Solution:
     def canJump(self, nums: List[int]) -> bool:
         # Write your code here
         pass`,
-        java: `class Solution {
+          java: `class Solution {
     public boolean canJump(int[] nums) {
         // Write your code here
     }
 }`,
-        cpp: `class Solution {
+          cpp: `class Solution {
 public:
     bool canJump(vector<int>& nums) {
         // Write your code here
     }
 };`
+        },
+        testCases: [
+          { input: { nums: [2, 3, 1, 1, 4] }, expected: true },
+          { input: { nums: [3, 2, 1, 0, 4] }, expected: false },
+          { input: { nums: [2, 0, 0] }, expected: true }
+        ]
       },
-      testCases: [
-        { input: { nums: [2, 3, 1, 1, 4] }, expected: true },
-        { input: { nums: [3, 2, 1, 0, 4] }, expected: false },
-        { input: { nums: [2, 0, 0] }, expected: true }
-      ]
-    }
-  ];
+      {
+        title: "Palindrome Number",
+        slug: "palindrome-number",
+        difficulty: "Easy",
+        order: 4,
+        videoId: "yubRKwCPyAg",
+        description: `Given an integer x, return true if x is a palindrome, and false otherwise.`,
+        examples: [
+          { input: "x = 121", output: "true", explanation: "121 reads as 121 from left to right and from right to left." },
+          { input: "x = -121", output: "false", explanation: "From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome." }
+        ],
+        constraints: ["-2^31 <= x <= 2^31 - 1"],
+        topics: ["Math"],
+        starterCode: {
+          javascript: `function isPalindrome(x) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def isPalindrome(self, x: int) -> bool:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public boolean isPalindrome(int x) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    bool isPalindrome(int x) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { x: 121 }, expected: true },
+          { input: { x: -121 }, expected: false },
+          { input: { x: 10 }, expected: false }
+        ]
+      },
+      {
+        title: "Valid Parentheses",
+        slug: "valid-parentheses",
+        difficulty: "Easy",
+        order: 5,
+        videoId: "WTwjK_uyukU",
+        description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.`,
+        examples: [
+          { input: 's = "()"', output: "true" },
+          { input: 's = "()[]{}"', output: "true" },
+          { input: 's = "(]"', output: "false" }
+        ],
+        constraints: ["1 <= s.length <= 10^4", "s consists of parentheses only '()[]{}'."],
+        topics: ["String", "Stack"],
+        starterCode: {
+          javascript: `function isValid(s) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def isValid(self, s: str) -> bool:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public boolean isValid(String s) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    bool isValid(string s) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { s: "()" }, expected: true },
+          { input: { s: "()[]{}" }, expected: true },
+          { input: { s: "(]" }, expected: false }
+        ]
+      },
+      {
+        title: "Merge Two Sorted Lists",
+        slug: "merge-two-sorted-lists",
+        difficulty: "Easy",
+        order: 6,
+        videoId: "XIdigkFu7uM",
+        description: `You are given the heads of two sorted linked lists list1 and list2. Merge the two lists in a one sorted list.`,
+        examples: [
+          { input: "list1 = [1,2,4], list2 = [1,3,4]", output: "[1,1,2,3,4,4]" }
+        ],
+        constraints: ["The number of nodes in both lists is in the range [0, 50].", "-100 <= Node.val <= 100"],
+        topics: ["Linked List", "Recursion"],
+        starterCode: {
+          javascript: `function mergeTwoLists(list1, list2) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def mergeTwoLists(self, list1: Optional[ListNode], list2: Optional[ListNode]) -> Optional[ListNode]:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public ListNode mergeTwoLists(ListNode list1, ListNode list2) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    ListNode* mergeTwoLists(ListNode* list1, ListNode* list2) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { list1: [1, 2, 4], list2: [1, 3, 4] }, expected: [1, 1, 2, 3, 4, 4] }
+        ]
+      },
+      {
+        title: "Maximum Subarray",
+        slug: "maximum-subarray",
+        difficulty: "Medium",
+        order: 7,
+        videoId: "5WZlOhjuU1w",
+        description: `Given an integer array nums, find the subarray with the largest sum, and return its sum.`,
+        examples: [
+          { input: "nums = [-2,1,-3,4,-1,2,1,-5,4]", output: "6", explanation: "The subarray [4,-1,2,1] has the largest sum 6." }
+        ],
+        constraints: ["1 <= nums.length <= 10^5", "-10^4 <= nums[i] <= 10^4"],
+        topics: ["Array", "Divide and Conquer", "Dynamic Programming"],
+        starterCode: {
+          javascript: `function maxSubArray(nums) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def maxSubArray(self, nums: List[int]) -> int:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public int maxSubArray(int[] nums) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    int maxSubArray(vector<int>& nums) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { nums: [-2, 1, -3, 4, -1, 2, 1, -5, 4] }, expected: 6 },
+          { input: { nums: [1] }, expected: 1 },
+          { input: { nums: [5, 4, -1, 7, 8] }, expected: 23 }
+        ]
+      },
+      {
+        title: "Search Insert Position",
+        slug: "search-insert-position",
+        difficulty: "Easy",
+        order: 8,
+        videoId: "K-RYzDZkzCI",
+        description: `Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.`,
+        examples: [
+          { input: "nums = [1,3,5,6], target = 5", output: "2" },
+          { input: "nums = [1,3,5,6], target = 2", output: "1" }
+        ],
+        constraints: ["1 <= nums.length <= 10^4", "-10^4 <= nums[i] <= 10^4", "nums contains distinct values sorted in ascending order."],
+        topics: ["Array", "Binary Search"],
+        starterCode: {
+          javascript: `function searchInsert(nums, target) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def searchInsert(self, nums: List[int], target: int) -> int:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public int searchInsert(int[] nums, int target) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    int searchInsert(vector<int>& nums, int target) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { nums: [1, 3, 5, 6], target: 5 }, expected: 2 },
+          { input: { nums: [1, 3, 5, 6], target: 2 }, expected: 1 },
+          { input: { nums: [1, 3, 5, 6], target: 7 }, expected: 4 }
+        ]
+      },
+      {
+        title: "Climbing Stairs",
+        slug: "climbing-stairs",
+        difficulty: "Easy",
+        order: 9,
+        videoId: "yFE628G-_ko",
+        description: `You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?`,
+        examples: [
+          { input: "n = 2", output: "2" },
+          { input: "n = 3", output: "3" }
+        ],
+        constraints: ["1 <= n <= 45"],
+        topics: ["Math", "Dynamic Programming", "Memoization"],
+        starterCode: {
+          javascript: `function climbStairs(n) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def climbStairs(self, n: int) -> int:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public int climbStairs(int n) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    int climbStairs(int n) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { n: 2 }, expected: 2 },
+          { input: { n: 3 }, expected: 3 }
+        ]
+      },
+      {
+        title: "Binary Tree Inorder Traversal",
+        slug: "binary-tree-inorder-traversal",
+        difficulty: "Easy",
+        order: 10,
+        videoId: "jzZgF8n2vRE",
+        description: `Given the root of a binary tree, return the inorder traversal of its nodes' values.`,
+        examples: [
+          { input: "root = [1,null,2,3]", output: "[1,3,2]" }
+        ],
+        constraints: ["The number of nodes in the tree is in the range [0, 100].", "-100 <= Node.val <= 100"],
+        topics: ["Stack", "Tree", "Depth-First Search", "Binary Tree"],
+        starterCode: {
+          javascript: `function inorderTraversal(root) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def inorderTraversal(self, root: Optional[TreeNode]) -> List[int]:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public List<Integer> inorderTraversal(TreeNode root) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    vector<int> inorderTraversal(TreeNode* root) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { root: [1, null, 2, 3] }, expected: [1, 3, 2] }
+        ]
+      },
+      {
+        title: "Symmetric Tree",
+        slug: "symmetric-tree",
+        difficulty: "Easy",
+        order: 11,
+        videoId: "K7LyJT17u6E",
+        description: `Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).`,
+        examples: [
+          { input: "root = [1,2,2,3,4,4,3]", output: "true" }
+        ],
+        constraints: ["The number of nodes in the tree is in the range [1, 1000].", "-100 <= Node.val <= 100"],
+        topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"],
+        starterCode: {
+          javascript: `function isSymmetric(root) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def isSymmetric(self, root: Optional[TreeNode]) -> bool:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public boolean isSymmetric(TreeNode root) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    bool isSymmetric(TreeNode* root) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { root: [1, 2, 2, 3, 4, 4, 3] }, expected: true }
+        ]
+      },
+      {
+        title: "Path Sum",
+        slug: "path-sum",
+        difficulty: "Easy",
+        order: 12,
+        videoId: "Hg82DzMemMI",
+        description: `Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.`,
+        examples: [
+          { input: "root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22", output: "true" }
+        ],
+        constraints: ["The number of nodes in the tree is in the range [0, 5000].", "-1000 <= Node.val <= 1000", "-1000 <= targetSum <= 1000"],
+        topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"],
+        starterCode: {
+          javascript: `function hasPathSum(root, targetSum) {\n    // Write your code here\n};`,
+          python: `class Solution:\n    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:\n        # Write your code here\n        pass`,
+          java: `class Solution {\n    public boolean hasPathSum(TreeNode root, int targetSum) {\n        // Write your code here\n    }\n}`,
+          cpp: `class Solution {\npublic:\n    bool hasPathSum(TreeNode* root, int targetSum) {\n        // Write your code here\n    }\n};`
+        },
+        testCases: [
+          { input: { root: [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1], targetSum: 22 }, expected: true }
+        ]
+      }
+    ];
 
     sampleProblems.forEach(problemData => {
       this.createProblem(problemData);
