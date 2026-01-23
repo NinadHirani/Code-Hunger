@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Problem, type InsertProblem, type Submission, type InsertSubmission, type UserProblem, type InsertUserProblem } from "@shared/schema";
+import { type User, type InsertUser, type Problem, type InsertProblem, type Submission, type InsertSubmission, type UserProblem, type InsertUserProblem, type Contest, type InsertContest, type ContestParticipant, type InsertContestParticipant, type Badge, type UserBadge, type UserStreak, type RewardPoint } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -30,6 +30,23 @@ export interface IStorage {
   toggleDislike(visitorId: string, problemSlug: string): Promise<any>;
   toggleStar(visitorId: string, problemSlug: string): Promise<any>;
   getAllInteractions(visitorId: string): Promise<any[]>;
+
+  // Contests
+  getContests(): Promise<Contest[]>;
+  getContest(id: string): Promise<Contest | undefined>;
+  createContest(contest: InsertContest): Promise<Contest>;
+  getContestParticipants(contestId: string): Promise<ContestParticipant[]>;
+  joinContest(participant: InsertContestParticipant): Promise<ContestParticipant>;
+  updateContestParticipant(contestId: string, userId: string, updates: Partial<ContestParticipant>): Promise<ContestParticipant>;
+
+  // Gamification & Streaks
+  getUserStreak(userId: string): Promise<UserStreak | undefined>;
+  updateUserStreak(userId: string): Promise<UserStreak>;
+  getBadges(): Promise<Badge[]>;
+  getUserBadges(userId: string): Promise<UserBadge[]>;
+  awardBadge(userId: string, badgeId: string): Promise<UserBadge>;
+  getRewardPoints(userId: string): Promise<RewardPoint | undefined>;
+  addRewardPoints(userId: string, points: number): Promise<RewardPoint>;
 }
 
 export class MemStorage implements IStorage {
@@ -38,6 +55,12 @@ export class MemStorage implements IStorage {
   private submissions: Map<string, Submission>;
   private userProblems: Map<string, UserProblem>;
   private userInteractions: Map<string, { liked: boolean; disliked: boolean; starred: boolean; solved: boolean }>;
+  private contests: Map<string, Contest>;
+  private contestParticipants: Map<string, ContestParticipant>;
+  private badges: Map<string, Badge>;
+  private userBadges: Map<string, UserBadge>;
+  private userStreaks: Map<string, UserStreak>;
+  private rewardPoints: Map<string, RewardPoint>;
 
   constructor() {
     this.users = new Map();
@@ -45,9 +68,17 @@ export class MemStorage implements IStorage {
     this.submissions = new Map();
     this.userProblems = new Map();
     this.userInteractions = new Map();
+    this.contests = new Map();
+    this.contestParticipants = new Map();
+    this.badges = new Map();
+    this.userBadges = new Map();
+    this.userStreaks = new Map();
+    this.rewardPoints = new Map();
     
-    // Initialize with sample problems
+    // Initialize with sample data
     this.initializeProblems();
+    this.initializeContests();
+    this.initializeBadges();
   }
 
   private initializeProblems() {
@@ -247,452 +278,49 @@ public:
         { input: { nums: [3, 2, 1, 0, 4] }, expected: false },
         { input: { nums: [2, 0, 0] }, expected: true }
       ]
-    },
-    {
-      title: "Valid Parentheses",
-      slug: "valid-parentheses",
-      difficulty: "Easy",
-      order: 4,
-      videoId: "xty7fr-k0TU",
-      description: `Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
-
-An input string is valid if:
-• Open brackets must be closed by the same type of brackets.
-• Open brackets must be closed in the correct order.
-• Every close bracket has a corresponding open bracket of the same type.`,
-      examples: [
-        {
-          input: 's = "()"',
-          output: "true"
-        },
-        {
-          input: 's = "()[]{}"',
-          output: "true"
-        },
-        {
-          input: 's = "(]"',
-          output: "false"
-        },
-        {
-          input: 's = "([)]"',
-          output: "false"
-        }
-      ],
-      constraints: [
-        "1 <= s.length <= 10⁴",
-        "s consists of parentheses only '()[]{}'."
-      ],
-      topics: ["String", "Stack"],
-      acceptance: 40,
-      submissions: 3200000,
-      accepted: 1280000,
-      starterCode: {
-        javascript: `function validParentheses(s) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def isValid(self, s: str) -> bool:
-        # Write your code here
-        pass`,
-        java: `class Solution {
-    public boolean validParentheses(String s) {
-        // Write your code here
-    }
-}`,
-        cpp: `class Solution {
-public:
-    bool validParentheses(string s) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { s: "()" }, expected: true },
-        { input: { s: "()[]{}" }, expected: true },
-        { input: { s: "(]" }, expected: false },
-        { input: { s: "([)]" }, expected: false }
-      ]
-    },
-    {
-      title: "Search a 2D Matrix",
-      slug: "search-a-2d-matrix",
-      difficulty: "Medium",
-      order: 5,
-      videoId: "Ber2pi7Z0j0",
-      description: `Write an efficient algorithm that searches for a value in an m x n matrix. This matrix has the following properties:
-
-• Integers in each row are sorted from left to right.
-• The first integer of each row is greater than the last integer of the previous row.
-
-Given matrix, an m x n matrix, and target, return true if target is in the matrix, and false otherwise.`,
-      examples: [
-        {
-          input: `matrix = [
-  [1,3,5,7],
-  [10,11,16,20],
-  [23,30,34,60]
-], target = 3`,
-          output: "true"
-        },
-        {
-          input: `matrix = [
-  [1,3,5,7],
-  [10,11,16,20],
-  [23,30,34,60]
-], target = 13`,
-          output: "false"
-        },
-        {
-          input: "matrix = [[1]], target = 1",
-          output: "true"
-        }
-      ],
-      constraints: [
-        "m == matrix.length",
-        "n == matrix[i].length",
-        "1 <= m, n <= 100",
-        "-10⁴ <= matrix[i][j], target <= 10⁴"
-      ],
-      topics: ["Array", "Binary Search", "Matrix"],
-      acceptance: 45,
-      submissions: 1800000,
-      accepted: 810000,
-      starterCode: {
-        javascript: `function searchMatrix(matrix, target) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
-        # Write your code here
-        pass`,
-        java: `class Solution {
-    public boolean searchMatrix(int[][] matrix, int target) {
-        // Write your code here
-    }
-}`,
-        cpp: `class Solution {
-public:
-    bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { matrix: [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target: 3 }, expected: true },
-        { input: { matrix: [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target: 13 }, expected: false }
-      ]
-    },
-    {
-      title: "Container With Most Water",
-      slug: "container-with-most-water",
-      difficulty: "Medium",
-      order: 6,
-      videoId: "UuiTKBwPgAo",
-      description: `You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
-
-Find two lines that together with the x-axis form a container, such that the container contains the most water.
-
-Return the maximum amount of water a container can store.
-
-Notice that you may not slant the container.`,
-      examples: [
-        {
-          input: "height = [1,8,6,2,5,4,8,3,7]",
-          output: "49",
-          explanation: "The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49."
-        },
-        {
-          input: "height = [1,1]",
-          output: "1"
-        }
-      ],
-      constraints: [
-        "n == height.length",
-        "2 <= n <= 10⁵",
-        "0 <= height[i] <= 10⁴"
-      ],
-      topics: ["Array", "Two Pointers", "Greedy"],
-      acceptance: 54,
-      submissions: 1900000,
-      accepted: 1026000,
-      starterCode: {
-        javascript: `function maxArea(height) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def maxArea(self, height: List[int]) -> int:
-        # Write your code here
-        pass`,
-        java: `class Solution {
-    public int maxArea(int[] height) {
-        // Write your code here
-    }
-}`,
-        cpp: `class Solution {
-public:
-    int maxArea(vector<int>& height) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { height: [1,8,6,2,5,4,8,3,7] }, expected: 49 },
-        { input: { height: [1,1] }, expected: 1 }
-      ]
-    },
-    {
-      title: "Merge Intervals",
-      slug: "merge-intervals",
-      difficulty: "Medium",
-      order: 7,
-      videoId: "44H3cEC2fyg",
-      description: `Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.`,
-      examples: [
-        {
-          input: "intervals = [[1,3],[2,6],[8,10],[15,18]]",
-          output: "[[1,6],[8,10],[15,18]]",
-          explanation: "Since intervals [1,3] and [2,6] overlaps, merge them into [1,6]."
-        },
-        {
-          input: "intervals = [[1,4],[4,5]]",
-          output: "[[1,5]]",
-          explanation: "Intervals [1,4] and [4,5] are considered overlapping."
-        }
-      ],
-      constraints: [
-        "1 <= intervals.length <= 10⁴",
-        "intervals[i].length == 2",
-        "0 <= starti <= endi <= 10⁴"
-      ],
-      topics: ["Array", "Sorting"],
-      acceptance: 46,
-      submissions: 1500000,
-      accepted: 690000,
-      starterCode: {
-        javascript: `function merge(intervals) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
-        # Write your code here
-        pass`,
-        java: `class Solution {
-    public int[][] merge(int[][] intervals) {
-        // Write your code here
-    }
-}`,
-        cpp: `class Solution {
-public:
-    vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { intervals: [[1,3],[2,6],[8,10],[15,18]] }, expected: [[1,6],[8,10],[15,18]] },
-        { input: { intervals: [[1,4],[4,5]] }, expected: [[1,5]] }
-      ]
-    },
-    {
-      title: "Maximum Depth of Binary Tree",
-      slug: "maximum-depth-of-binary-tree",
-      difficulty: "Easy",
-      order: 8,
-      videoId: "hTM3phVI6TM",
-      description: `Given the root of a binary tree, return its maximum depth.
-
-A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.`,
-      examples: [
-        {
-          input: "root = [3,9,20,null,null,15,7]",
-          output: "3"
-        },
-        {
-          input: "root = [1,null,2]",
-          output: "2"
-        }
-      ],
-      constraints: [
-        "The number of nodes in the tree is in the range [0, 10⁴].",
-        "-100 <= Node.val <= 100"
-      ],
-      topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"],
-      acceptance: 74,
-      submissions: 2200000,
-      accepted: 1628000,
-      starterCode: {
-        javascript: `/**
- * Definition for a binary tree node.
- * function TreeNode(val, left, right) {
- *     this.val = (val===undefined ? 0 : val)
- *     this.left = (left===undefined ? null : left)
- *     this.right = (right===undefined ? null : right)
- * }
- */
-function maxDepth(root) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def maxDepth(self, root: Optional[TreeNode]) -> int:
-        # Write your code here
-        pass`,
-        java: `/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
-class Solution {
-    public int maxDepth(TreeNode root) {
-        // Write your code here
-    }
-}`,
-        cpp: `/**
- * Definition for a binary tree node.
- * struct TreeNode {
- *     int val;
- *     TreeNode *left;
- *     TreeNode *right;
- *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
- *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
- *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
- * };
- */
-class Solution {
-public:
-    int maxDepth(TreeNode* root) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { root: [3,9,20,null,null,15,7] }, expected: 3 },
-        { input: { root: [1,null,2] }, expected: 2 },
-        { input: { root: [] }, expected: 0 }
-      ]
-    },
-    {
-      title: "Best Time to Buy and Sell Stock",
-      slug: "best-time-to-buy-and-sell-stock",
-      difficulty: "Easy",
-      order: 9,
-      videoId: "1pkOgXD63yU",
-      description: `You are given an array prices where prices[i] is the price of a given stock on the ith day.
-
-You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
-
-Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.`,
-      examples: [
-        {
-          input: "prices = [7,1,5,3,6,4]",
-          output: "5",
-          explanation: "Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5."
-        },
-        {
-          input: "prices = [7,6,4,3,1]",
-          output: "0",
-          explanation: "In this case, no transactions are done and the max profit = 0."
-        }
-      ],
-      constraints: [
-        "1 <= prices.length <= 10⁵",
-        "0 <= prices[i] <= 10⁴"
-      ],
-      topics: ["Array", "Dynamic Programming"],
-      acceptance: 54,
-      submissions: 2400000,
-      accepted: 1296000,
-      starterCode: {
-        javascript: `function maxProfit(prices) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def maxProfit(self, prices: List[int]) -> int:
-        # Write your code here
-        pass`,
-        java: `class Solution {
-    public int maxProfit(int[] prices) {
-        // Write your code here
-    }
-}`,
-        cpp: `class Solution {
-public:
-    int maxProfit(vector<int>& prices) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { prices: [7,1,5,3,6,4] }, expected: 5 },
-        { input: { prices: [7,6,4,3,1] }, expected: 0 }
-      ]
-    },
-    {
-      title: "Subsets",
-      slug: "subsets",
-      difficulty: "Medium", 
-      order: 10,
-      videoId: "REOH22Xwdkk",
-      description: `Given an integer array nums of unique elements, return all possible subsets (the power set).
-
-The solution set must not contain duplicate subsets. Return the solution in any order.`,
-      examples: [
-        {
-          input: "nums = [1,2,3]",
-          output: "[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]"
-        },
-        {
-          input: "nums = [0]",
-          output: "[[],[0]]"
-        }
-      ],
-      constraints: [
-        "1 <= nums.length <= 10",
-        "-10 <= nums[i] <= 10",
-        "All the numbers of nums are unique."
-      ],
-      topics: ["Array", "Backtracking", "Bit Manipulation"],
-      acceptance: 75,
-      submissions: 1300000,
-      accepted: 975000,
-      starterCode: {
-        javascript: `function subsets(nums) {
-    // Write your code here
-};`,
-          python: `class Solution:
-    def subsets(self, nums: List[int]) -> List[List[int]]:
-        # Write your code here
-        pass`,
-        java: `class Solution {
-    public List<List<Integer>> subsets(int[] nums) {
-        // Write your code here
-    }
-}`,
-        cpp: `class Solution {
-public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        // Write your code here
-    }
-};`
-      },
-      testCases: [
-        { input: { nums: [1,2,3] }, expected: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]] },
-        { input: { nums: [0] }, expected: [[],[0]] }
-      ]
     }
   ];
 
     sampleProblems.forEach(problemData => {
       this.createProblem(problemData);
+    });
+  }
+
+  private initializeContests() {
+    const sampleContests: InsertContest[] = [
+      {
+        title: "Weekly Contest 1",
+        description: "Join our first weekly coding contest! Solve 3 problems in 90 minutes.",
+        startTime: new Date(Date.now() - 3600000), // Started 1 hour ago
+        endTime: new Date(Date.now() + 3600000 * 24), // Ends in 24 hours
+        problemIds: ["two-sum", "reverse-linked-list", "jump-game"],
+        status: "ongoing"
+      },
+      {
+        title: "Algorithms Cup",
+        description: "A high-stakes algorithmic challenge for top developers.",
+        startTime: new Date(Date.now() + 3600000 * 48), // Starts in 48 hours
+        endTime: new Date(Date.now() + 3600000 * 50),
+        problemIds: ["two-sum", "jump-game"],
+        status: "upcoming"
+      }
+    ];
+
+    sampleContests.forEach(contestData => {
+      this.createContest(contestData);
+    });
+  }
+
+  private initializeBadges() {
+    const sampleBadges: InsertBadgeSchema[] = [
+      { name: "First Solve", description: "Solved your first problem!", image: "🥇", criteria: { type: "solved_count", count: 1 } },
+      { name: "Algorithmist", description: "Solved 10 problems.", image: "👨‍💻", criteria: { type: "solved_count", count: 10 } },
+      { name: "Daily Streak", description: "Maintained a 7-day streak!", image: "🔥", criteria: { type: "streak_count", count: 7 } }
+    ];
+    // Cast to Badge type for simplicity in mem storage
+    sampleBadges.forEach(badge => {
+      const id = randomUUID();
+      this.badges.set(id, { ...badge, id } as Badge);
     });
   }
 
@@ -809,7 +437,7 @@ public:
       attempts: insertUserProblem.attempts || 0,
       lastAttemptAt: insertUserProblem.lastAttemptAt || null
     };
-    const key = `${userProblem.userId}-${userProblem.problemId}`;
+    const key = `${userProblem.visitorId}-${userProblem.problemSlug}`; // Fixed to use slug for interaction tracking
     this.userProblems.set(key, userProblem);
     return userProblem;
   }
@@ -930,6 +558,112 @@ public:
     
     return result;
   }
+
+  // Contest methods
+  async getContests(): Promise<Contest[]> {
+    return Array.from(this.contests.values());
+  }
+
+  async getContest(id: string): Promise<Contest | undefined> {
+    return this.contests.get(id);
+  }
+
+  async createContest(insertContest: InsertContest): Promise<Contest> {
+    const id = randomUUID();
+    const contest: Contest = { 
+      ...insertContest, 
+      id,
+      problemIds: insertContest.problemIds || [],
+      status: insertContest.status || "upcoming",
+      createdAt: new Date()
+    };
+    this.contests.set(id, contest);
+    return contest;
+  }
+
+  async getContestParticipants(contestId: string): Promise<ContestParticipant[]> {
+    return Array.from(this.contestParticipants.values()).filter(p => p.contestId === contestId);
+  }
+
+  async joinContest(participant: InsertContestParticipant): Promise<ContestParticipant> {
+    const id = randomUUID();
+    const cp: ContestParticipant = {
+      ...participant,
+      id,
+      score: 0,
+      rank: null,
+      submissions: [],
+      joinedAt: new Date(),
+      blockchainHash: null
+    };
+    this.contestParticipants.set(id, cp);
+    return cp;
+  }
+
+  async updateContestParticipant(contestId: string, userId: string, updates: Partial<ContestParticipant>): Promise<ContestParticipant> {
+    const participant = Array.from(this.contestParticipants.values()).find(p => p.contestId === contestId && p.userId === userId);
+    if (!participant) throw new Error("Participant not found");
+    const updated = { ...participant, ...updates };
+    this.contestParticipants.set(participant.id, updated);
+    return updated;
+  }
+
+  // Gamification & Streaks
+  async getUserStreak(userId: string): Promise<UserStreak | undefined> {
+    return this.userStreaks.get(userId);
+  }
+
+  async updateUserStreak(userId: string): Promise<UserStreak> {
+    const current = this.userStreaks.get(userId) || { id: randomUUID(), userId, currentStreak: 0, longestStreak: 0, lastSubmissionAt: null };
+    const now = new Date();
+    const lastAt = current.lastSubmissionAt;
+
+    if (!lastAt) {
+      current.currentStreak = 1;
+    } else {
+      const diff = now.getTime() - lastAt.getTime();
+      const diffDays = diff / (1000 * 3600 * 24);
+      if (diffDays < 1) {
+        // Same day, do nothing
+      } else if (diffDays < 2) {
+        current.currentStreak += 1;
+      } else {
+        current.currentStreak = 1;
+      }
+    }
+    current.lastSubmissionAt = now;
+    if (current.currentStreak > current.longestStreak) current.longestStreak = current.currentStreak;
+    this.userStreaks.set(userId, current);
+    return current;
+  }
+
+  async getBadges(): Promise<Badge[]> {
+    return Array.from(this.badges.values());
+  }
+
+  async getUserBadges(userId: string): Promise<UserBadge[]> {
+    return Array.from(this.userBadges.values()).filter(b => b.userId === userId);
+  }
+
+  async awardBadge(userId: string, badgeId: string): Promise<UserBadge> {
+    const id = randomUUID();
+    const ub: UserBadge = { id, userId, badgeId, earnedAt: new Date() };
+    this.userBadges.set(id, ub);
+    return ub;
+  }
+
+  async getRewardPoints(userId: string): Promise<RewardPoint | undefined> {
+    return this.rewardPoints.get(userId);
+  }
+
+  async addRewardPoints(userId: string, points: number): Promise<RewardPoint> {
+    const current = this.rewardPoints.get(userId) || { id: randomUUID(), userId, points: 0, updatedAt: new Date() };
+    current.points += points;
+    current.updatedAt = new Date();
+    this.rewardPoints.set(userId, current);
+    return current;
+  }
 }
 
 export const storage = new MemStorage();
+

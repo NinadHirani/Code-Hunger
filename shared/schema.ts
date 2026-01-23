@@ -59,6 +59,58 @@ export const userProblems = pgTable("user_problems", {
   lastAttemptAt: timestamp("last_attempt_at"),
 });
 
+export const contests = pgTable("contests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  startTime: timestamp("start_time").notNull(),
+  endTime: timestamp("end_time").notNull(),
+  problemIds: text("problem_ids").array().default([]), // Array of problem IDs
+  status: text("status").notNull().default("upcoming"), // "upcoming", "ongoing", "finished"
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const contestParticipants = pgTable("contest_participants", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contestId: varchar("contest_id").notNull().references(() => contests.id),
+  userId: varchar("user_id").notNull(), // Can be visitorId or userId
+  score: integer("score").default(0),
+  rank: integer("rank"),
+  submissions: json("submissions").notNull().default([]), // Array of submission objects
+  joinedAt: timestamp("joined_at").defaultNow(),
+  blockchainHash: text("blockchain_hash"), // For blockchain secured results
+});
+
+export const badges = pgTable("badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  image: text("image"),
+  criteria: json("criteria").notNull(), // e.g. { type: "solved_count", count: 50 }
+});
+
+export const userBadges = pgTable("user_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  badgeId: varchar("badge_id").notNull().references(() => badges.id),
+  earnedAt: timestamp("earned_at").defaultNow(),
+});
+
+export const userStreaks = pgTable("user_streaks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique(),
+  currentStreak: integer("current_streak").default(0),
+  longestStreak: integer("longest_streak").default(0),
+  lastSubmissionAt: timestamp("last_submission_at"),
+});
+
+export const rewardPoints = pgTable("reward_points", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique(),
+  points: integer("points").default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -78,6 +130,33 @@ export const insertUserProblemSchema = createInsertSchema(userProblems).omit({
   id: true,
 });
 
+export const insertContestSchema = createInsertSchema(contests).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertContestParticipantSchema = createInsertSchema(contestParticipants).omit({
+  id: true,
+  joinedAt: true,
+});
+
+export const insertBadgeSchema = createInsertSchema(badges).omit({
+  id: true,
+});
+
+export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({
+  id: true,
+  earnedAt: true,
+});
+
+export const insertUserStreakSchema = createInsertSchema(userStreaks).omit({
+  id: true,
+});
+
+export const insertRewardPointsSchema = createInsertSchema(rewardPoints).omit({
+  id: true,
+});
+
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
 export type InsertProblem = z.infer<typeof insertProblemSchema>;
@@ -86,3 +165,11 @@ export type InsertSubmission = z.infer<typeof insertSubmissionSchema>;
 export type Submission = typeof submissions.$inferSelect;
 export type InsertUserProblem = z.infer<typeof insertUserProblemSchema>;
 export type UserProblem = typeof userProblems.$inferSelect;
+export type Contest = typeof contests.$inferSelect;
+export type InsertContest = z.infer<typeof insertContestSchema>;
+export type ContestParticipant = typeof contestParticipants.$inferSelect;
+export type InsertContestParticipant = z.infer<typeof insertContestParticipantSchema>;
+export type Badge = typeof badges.$inferSelect;
+export type UserBadge = typeof userBadges.$inferSelect;
+export type UserStreak = typeof userStreaks.$inferSelect;
+export type RewardPoint = typeof rewardPoints.$inferSelect;

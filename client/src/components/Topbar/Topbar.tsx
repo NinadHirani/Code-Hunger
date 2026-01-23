@@ -69,9 +69,15 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 					</div>
 				)}
 
-				<div className='flex items-center space-x-4 flex-1 justify-end'>
-					<Link href='/submissions' className='text-dark-gray-7 hover:text-white transition font-medium'>
+				<div className='flex items-center space-x-6 flex-1 justify-end'>
+					<Link href='/contests' className={`hover:text-white transition font-medium ${location === '/contests' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
+						Contests
+					</Link>
+					<Link href='/submissions' className={`hover:text-white transition font-medium ${location === '/submissions' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
 						Submissions
+					</Link>
+					<Link href='/profile' className={`hover:text-white transition font-medium ${location === '/profile' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
+						Profile
 					</Link>
 					{problemPage && <Timer />}
 				</div>

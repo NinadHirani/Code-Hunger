@@ -1,8 +1,9 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertSubmissionSchema, insertUserProblemSchema } from "@shared/schema";
+import { insertSubmissionSchema, insertUserProblemSchema, insertContestSchema, insertContestParticipantSchema } from "@shared/schema";
 import { z } from "zod";
+import { createHash } from "crypto";
 
 const PISTON_API = "https://emkc.org/api/v2/piston";
 
@@ -12,6 +13,11 @@ const LANGUAGE_MAP: Record<string, { language: string; version: string }> = {
   java: { language: "java", version: "15.0.2" },
   cpp: { language: "cpp", version: "10.2.0" },
 };
+
+// Simple mock for blockchain hashing
+function secureResult(data: any) {
+  return createHash('sha256').update(JSON.stringify(data)).digest('hex');
+}
 
 const JS_HELPERS = `
 function ListNode(val, next) {
@@ -679,12 +685,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       } else {
         await storage.createUserProblem({
-          userId: submissionData.userId,
-          problemId: submissionData.problemId,
+          visitorId: submissionData.userId, // Using userId as visitorId for persistence
+          problemSlug: submissionData.problemId, // Using problemId as slug for status mapping
           solved: isAccepted,
           attempts: 1,
           lastAttemptAt: new Date()
         });
+      }
+
+      if (isAccepted) {
+        // Update streak
+        await storage.updateUserStreak(submissionData.userId);
+        // Add reward points
+        await storage.addRewardPoints(submissionData.userId, 10);
+        
+        // Check for badges (simple check)
+        const problems = await storage.getProblems();
+        const userProblems = await Promise.all(problems.map(p => storage.getUserProblem(submissionData.userId, p.id)));
+        const solvedCount = userProblems.filter(p => p?.solved).length;
+        
+        const badges = await storage.getBadges();
+        const userBadges = await storage.getUserBadges(submissionData.userId);
+        
+        for (const badge of badges) {
+          const alreadyHas = userBadges.some(ub => ub.badgeId === badge.id);
+          if (!alreadyHas) {
+            const criteria = badge.criteria as any;
+            if (criteria.type === 'solved_count' && solvedCount >= criteria.count) {
+              await storage.awardBadge(submissionData.userId, badge.id);
+            }
+          }
+        }
       }
       
       res.json(submission);
@@ -693,6 +724,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid submission data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to submit solution" });
+    }
+  });
+
+  // Contests
+  app.get("/api/contests", async (req, res) => {
+    try {
+      const contests = await storage.getContests();
+      res.json(contests);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch contests" });
+    }
+  });
+
+  app.get("/api/contests/:id", async (req, res) => {
+    try {
+      const contest = await storage.getContest(req.params.id);
+      if (!contest) return res.status(404).json({ message: "Contest not found" });
+      res.json(contest);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch contest" });
+    }
+  });
+
+  app.post("/api/contests/:id/join", async (req, res) => {
+    try {
+      const { userId } = req.body;
+      const participant = await storage.joinContest({ contestId: req.params.id, userId });
+      res.json(participant);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to join contest" });
+    }
+  });
+
+  app.get("/api/contests/:id/leaderboard", async (req, res) => {
+    try {
+      const participants = await storage.getContestParticipants(req.params.id);
+      res.json(participants.sort((a, b) => (b.score || 0) - (a.score || 0)));
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch leaderboard" });
+    }
+  });
+
+  // Gamification
+  app.get("/api/users/:userId/streak", async (req, res) => {
+    try {
+      const streak = await storage.getUserStreak(req.params.userId);
+      res.json(streak || { currentStreak: 0, longestStreak: 0 });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch streak" });
+    }
+  });
+
+  app.get("/api/users/:userId/badges", async (req, res) => {
+    try {
+      const userBadges = await storage.getUserBadges(req.params.userId);
+      const badges = await storage.getBadges();
+      const detailedBadges = userBadges.map(ub => ({
+        ...ub,
+        badge: badges.find(b => b.id === ub.badgeId)
+      }));
+      res.json(detailedBadges);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch badges" });
+    }
+  });
+
+  app.get("/api/users/:userId/rewards", async (req, res) => {
+    try {
+      const rewards = await storage.getRewardPoints(req.params.userId);
+      res.json(rewards || { points: 0 });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch rewards" });
+    }
+  });
+
+  app.get("/api/badges", async (req, res) => {
+    try {
+      const badges = await storage.getBadges();
+      res.json(badges);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch badges" });
+    }
+  });
+
+  // Secure a contest result (Blockchain simulation)
+  app.post("/api/contests/:id/secure", async (req, res) => {
+    try {
+      const { userId, score } = req.body;
+      const hash = secureResult({ contestId: req.params.id, userId, score, timestamp: Date.now() });
+      const updated = await storage.updateContestParticipant(req.params.id, userId, { blockchainHash: hash });
+      res.json({ hash, updated });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to secure result" });
     }
   });
 

@@ -7,6 +7,9 @@ import { ToastContainer } from "react-toastify";
 import Home from "@/pages/Home";
 import ProblemPage from "@/pages/ProblemPage";
 import Submissions from "@/pages/Submissions";
+import Contests from "@/pages/Contests";
+import ContestDetails from "@/pages/ContestDetails";
+import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,6 +18,9 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/submissions" component={Submissions} />
+      <Route path="/contests" component={Contests} />
+      <Route path="/contests/:id" component={ContestDetails} />
+      <Route path="/profile" component={Profile} />
       <Route path="/problems/:slug" component={ProblemPage} />
       <Route component={NotFound} />
     </Switch>
