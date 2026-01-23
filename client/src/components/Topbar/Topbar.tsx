@@ -39,7 +39,9 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 	return (
 		<nav className='relative flex h-[50px] w-full shrink-0 items-center px-5 bg-dark-layer-1 text-dark-gray-7'>
 			<div className={`flex w-full items-center justify-between ${!problemPage ? "max-w-[1200px] mx-auto" : ""}`}>
-				<div className='flex-1'></div>
+				<div className='flex-1'>
+					{/* Left side empty or navigation if needed */}
+				</div>
 
 				{problemPage && (
 					<div className='flex items-center gap-4 flex-1 justify-center'>
@@ -69,7 +71,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 
 				<div className='flex items-center space-x-6 flex-1 justify-end'>
 					<Link href='/' className='h-[22px]'>
-						<div className="text-brand-orange text-2xl font-bold whitespace-nowrap">Code Hunger</div>
+						<div className="text-brand-orange text-2xl font-bold">Code Hunger</div>
 					</Link>
 					<Link href='/contests' className={`hover:text-white transition font-medium ${location === '/contests' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
 						Contests

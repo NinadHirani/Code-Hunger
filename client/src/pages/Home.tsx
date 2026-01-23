@@ -83,7 +83,7 @@ export default function Home() {
           <InteractionsSection />
           
           <div className="grid grid-cols-1 gap-8">
-            <div className="lg:col-span-4">
+            <div className="w-full">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-white mb-2">Problem Set</h2>
                 <p className="text-dark-gray-6">Choose a problem and start coding</p>
