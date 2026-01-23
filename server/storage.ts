@@ -699,35 +699,257 @@ public:
             { input: { s: "anagram", t: "nagaram" }, expected: true }
           ]
         },
-        {
-          title: "Min Stack",
-          slug: "min-stack",
-          difficulty: "Medium",
-          order: 22,
-          videoId: "qkLl7nugYaw",
-          description: `Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
-  Implement the MinStack class:
-  - MinStack() initializes the stack object.
-  - void push(int val) pushes the element val onto the stack.
-  - void pop() removes the element on the top of the stack.
-  - int top() gets the top element of the stack.
-  - int getMin() retrieves the minimum element in the stack.`,
-          examples: [
-            { input: '["MinStack","push","push","push","getMin","pop","top","getMin"]\n[[],[-2],[0],[-3],[],[],[],[]]', output: '[null,null,null,null,-3,null,0,-2]' }
-          ],
-          constraints: ["-2^31 <= val <= 2^31 - 1", "Methods pop, top and getMin operations will always be called on non-empty stacks.", "At most 3 * 10^4 calls will be made to push, pop, top, and getMin."],
-          topics: ["Stack", "Design"],
-          starterCode: {
-            javascript: `var MinStack = function() {\n    // Initialize your stack here\n};\n\nMinStack.prototype.push = function(val) {\n    // Write your code here\n};\n\nMinStack.prototype.pop = function() {\n    // Write your code here\n};\n\nMinStack.prototype.top = function() {\n    // Write your code here\n};\n\nMinStack.prototype.getMin = function() {\n    // Write your code here\n};`,
-            python: `class MinStack:\n    def __init__(self):\n        # Initialize your stack here\n        pass\n\n    def push(self, val: int) -> None:\n        # Write your code here\n        pass\n\n    def pop(self) -> None:\n        # Write your code here\n        pass\n\n    def top(self) -> int:\n        # Write your code here\n        pass\n\n    def getMin(self) -> int:\n        # Write your code here\n        pass`,
-            java: `class MinStack {\n    public MinStack() {\n        // Initialize your stack here\n    }\n    \n    public void push(int val) {\n        // Write your code here\n    }\n    \n    public void pop() {\n        // Write your code here\n    }\n    \n    public int top() {\n        // Write your code here\n    }\n    \n    public int getMin() {\n        // Write your code here\n    }\n}`,
-            cpp: `class MinStack {\npublic:\n    MinStack() {\n        // Initialize your stack here\n    }\n    \n    void push(int val) {\n        // Write your code here\n    }\n    \n    void pop() {\n        // Write your code here\n    }\n    \n    int top() {\n        // Write your code here\n    }\n    \n    int getMin() {\n        // Write your code here\n    }\n};`
+          {
+            title: "Min Stack",
+            slug: "min-stack",
+            difficulty: "Medium",
+            order: 22,
+            videoId: "qkLl7nugYaw",
+            description: `Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+    Implement the MinStack class:
+    - MinStack() initializes the stack object.
+    - void push(int val) pushes the element val onto the stack.
+    - void pop() removes the element on the top of the stack.
+    - int top() gets the top element of the stack.
+    - int getMin() retrieves the minimum element in the stack.`,
+            examples: [
+              { input: '["MinStack","push","push","push","getMin","pop","top","getMin"]\n[[],[-2],[0],[-3],[],[],[],[]]', output: '[null,null,null,null,-3,null,0,-2]' }
+            ],
+            constraints: ["-2^31 <= val <= 2^31 - 1", "Methods pop, top and getMin operations will always be called on non-empty stacks.", "At most 3 * 10^4 calls will be made to push, pop, top, and getMin."],
+            topics: ["Stack", "Design"],
+            starterCode: {
+              javascript: `var MinStack = function() {\n    // Initialize your stack here\n};\n\nMinStack.prototype.push = function(val) {\n    // Write your code here\n};\n\nMinStack.prototype.pop = function() {\n    // Write your code here\n};\n\nMinStack.prototype.top = function() {\n    // Write your code here\n};\n\nMinStack.prototype.getMin = function() {\n    // Write your code here\n};`,
+              python: `class MinStack:\n    def __init__(self):\n        # Initialize your stack here\n        pass\n\n    def push(self, val: int) -> None:\n        # Write your code here\n        pass\n\n    def pop(self) -> None:\n        # Write your code here\n        pass\n\n    def top(self) -> int:\n        # Write your code here\n        pass\n\n    def getMin(self) -> int:\n        # Write your code here\n        pass`,
+              java: `class MinStack {\n    public MinStack() {\n        // Initialize your stack here\n    }\n    \n    public void push(int val) {\n        // Write your code here\n    }\n    \n    public void pop() {\n        // Write your code here\n    }\n    \n    public int top() {\n        // Write your code here\n    }\n    \n    public int getMin() {\n        // Write your code here\n    }\n}`,
+              cpp: `class MinStack {\npublic:\n    MinStack() {\n        // Initialize your stack here\n    }\n    \n    void push(int val) {\n        // Write your code here\n    }\n    \n    void pop() {\n        // Write your code here\n    }\n    \n    int top() {\n        // Write your code here\n    }\n    \n    int getMin() {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { operations: ["MinStack", "push", "push", "push", "getMin", "pop", "top", "getMin"], values: [[], [-2], [0], [-3], [], [], [], []] }, expected: [null, null, null, null, -3, null, 0, -2] }
+            ]
           },
-          testCases: [
-            { input: { operations: ["MinStack", "push", "push", "push", "getMin", "pop", "top", "getMin"], values: [[], [-2], [0], [-3], [], [], [], []] }, expected: [null, null, null, null, -3, null, 0, -2] }
-          ]
-        }
-      ];
+          {
+            title: "Longest Palindromic Substring",
+            slug: "longest-palindromic-substring",
+            difficulty: "Medium",
+            order: 23,
+            videoId: "XYQEc14igLI",
+            description: "Given a string s, return the longest palindromic substring in s.",
+            examples: [
+              { input: 's = "babad"', output: '"bab"', explanation: '"aba" is also a valid answer.' }
+            ],
+            constraints: ["1 <= s.length <= 1000", "s consists of only digits and English letters."],
+            topics: ["String", "Dynamic Programming"],
+            starterCode: {
+              javascript: `function longestPalindrome(s) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def longestPalindrome(self, s: str) -> str:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public String longestPalindrome(String s) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    string longestPalindrome(string s) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { s: "babad" }, expected: "bab" },
+              { input: { s: "cbbd" }, expected: "bb" }
+            ]
+          },
+          {
+            title: "3Sum",
+            slug: "3sum",
+            difficulty: "Medium",
+            order: 24,
+            videoId: "jzZgF8n2vRE",
+            description: "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.",
+            examples: [
+              { input: "nums = [-1,0,1,2,-1,-4]", output: "[[-1,-1,2],[-1,0,1]]" }
+            ],
+            constraints: ["3 <= nums.length <= 3000", "-10^5 <= nums[i] <= 10^5"],
+            topics: ["Array", "Two Pointers", "Sorting"],
+            starterCode: {
+              javascript: `function threeSum(nums) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def threeSum(self, nums: List[int]) -> List[List[int]]:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public List<List<Integer>> threeSum(int[] nums) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    vector<vector<int>> threeSum(vector<int>& nums) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { nums: [-1, 0, 1, 2, -1, -4] }, expected: [[-1, -1, 2], [-1, 0, 1]] }
+            ]
+          },
+          {
+            title: "Rotate Image",
+            slug: "rotate-image",
+            difficulty: "Medium",
+            order: 25,
+            videoId: "fMSJSS7eO1w",
+            description: "You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).",
+            examples: [
+              { input: "matrix = [[1,2,3],[4,5,6],[7,8,9]]", output: "[[7,4,1],[8,5,2],[9,6,3]]" }
+            ],
+            constraints: ["n == matrix.length == matrix[i].length", "1 <= n <= 20", "-1000 <= matrix[i][j] <= 1000"],
+            topics: ["Array", "Math", "Matrix"],
+            starterCode: {
+              javascript: `function rotate(matrix) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def rotate(self, matrix: List[List[int]]) -> None:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public void rotate(int[][] matrix) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    void rotate(vector<vector<int>>& matrix) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { matrix: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] }, expected: [[7, 4, 1], [8, 5, 2], [9, 6, 3]] }
+            ]
+          },
+          {
+            title: "Group Anagrams",
+            slug: "group-anagrams",
+            difficulty: "Medium",
+            order: 26,
+            videoId: "vzdNOK2oB2E",
+            description: "Given an array of strings strs, group the anagrams together. You can return the answer in any order.",
+            examples: [
+              { input: 'strs = ["eat","tea","tan","ate","nat","bat"]', output: '[["bat"],["nat","tan"],["ate","eat","tea"]]' }
+            ],
+            constraints: ["1 <= strs.length <= 10^4", "0 <= strs[i].length <= 100", "strs[i] consists of lowercase English letters."],
+            topics: ["Array", "Hash Table", "String", "Sorting"],
+            starterCode: {
+              javascript: `function groupAnagrams(strs) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def groupAnagrams(self, strs: List[str]) -> List[List[str]]:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public List<List<String>> groupAnagrams(String[] strs) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    vector<vector<string>> groupAnagrams(vector<string>& strs) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { strs: ["eat", "tea", "tan", "ate", "nat", "bat"] }, expected: [["bat"], ["nat", "tan"], ["ate", "eat", "tea"]] }
+            ]
+          },
+          {
+            title: "Spiral Matrix",
+            slug: "spiral-matrix",
+            difficulty: "Medium",
+            order: 27,
+            videoId: "BJnMZNwUk1M",
+            description: "Given an m x n matrix, return all elements of the matrix in spiral order.",
+            examples: [
+              { input: "matrix = [[1,2,3],[4,5,6],[7,8,9]]", output: "[1,2,3,6,9,8,7,4,5]" }
+            ],
+            constraints: ["m == matrix.length", "n == matrix[i].length", "1 <= m, n <= 10", "-100 <= matrix[i][j] <= 100"],
+            topics: ["Array", "Matrix", "Simulation"],
+            starterCode: {
+              javascript: `function spiralOrder(matrix) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def spiralOrder(self, matrix: List[List[int]]) -> List[int]:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public List<Integer> spiralOrder(int[][] matrix) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    vector<int> spiralOrder(vector<vector<int>>& matrix) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { matrix: [[1, 2, 3], [4, 5, 6], [7, 8, 9]] }, expected: [1, 2, 3, 6, 9, 8, 7, 4, 5] }
+            ]
+          },
+          {
+            title: "Word Search",
+            slug: "word-search",
+            difficulty: "Medium",
+            order: 28,
+            videoId: "pfiQ_PS1g8E",
+            description: "Given an m x n grid of characters board and a string word, return true if word exists in the grid.",
+            examples: [
+              { input: 'board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"', output: "true" }
+            ],
+            constraints: ["m == board.length", "n = board[i].length", "1 <= m, n <= 6", "1 <= word.length <= 15"],
+            topics: ["Array", "Backtracking", "Matrix"],
+            starterCode: {
+              javascript: `function exist(board, word) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def exist(self, board: List[List[str]], word: str) -> bool:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public boolean exist(char[][] board, String word) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    bool exist(vector<vector<char>>& board, string word) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { board: [["A", "B", "C", "E"], ["S", "F", "C", "S"], ["A", "D", "E", "E"]], word: "ABCCED" }, expected: true }
+            ]
+          },
+          {
+            title: "Decode Ways",
+            slug: "decode-ways",
+            difficulty: "Medium",
+            order: 29,
+            videoId: "FEkZxCl_-ik",
+            description: "A message containing letters from A-Z can be encoded into numbers using 'A' -> '1', 'B' -> '2', ..., 'Z' -> '26'. Given a string s containing only digits, return the number of ways to decode it.",
+            examples: [
+              { input: 's = "12"', output: "2", explanation: '"12" could be decoded as "AB" (1 2) or "L" (12).' }
+            ],
+            constraints: ["1 <= s.length <= 100", "s contains only digits and may contain leading zero(s)."],
+            topics: ["String", "Dynamic Programming"],
+            starterCode: {
+              javascript: `function numDecodings(s) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def numDecodings(self, s: str) -> int:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public int numDecodings(String s) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    int numDecodings(string s) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { s: "12" }, expected: 2 },
+              { input: { s: "226" }, expected: 3 }
+            ]
+          },
+          {
+            title: "Binary Tree Level Order Traversal",
+            slug: "binary-tree-level-order-traversal",
+            difficulty: "Medium",
+            order: 30,
+            videoId: "6ZnyEApgFYg",
+            description: "Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).",
+            examples: [
+              { input: "root = [3,9,20,null,null,15,7]", output: "[[3],[9,20],[15,7]]" }
+            ],
+            constraints: ["The number of nodes in the tree is in the range [0, 2000].", "-1000 <= Node.val <= 1000"],
+            topics: ["Tree", "Breadth-First Search", "Binary Tree"],
+            starterCode: {
+              javascript: `function levelOrder(root) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def levelOrder(self, root: Optional[TreeNode]) -> List[List[int]]:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public List<List<Integer>> levelOrder(TreeNode root) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    vector<vector<int>> levelOrder(TreeNode* root) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { root: [3, 9, 20, null, null, 15, 7] }, expected: [[3], [9, 20], [15, 7]] }
+            ]
+          },
+          {
+            title: "Validate Binary Search Tree",
+            slug: "validate-binary-search-tree",
+            difficulty: "Medium",
+            order: 31,
+            videoId: "s6ATEkipzow",
+            description: "Given the root of a binary tree, determine if it is a valid binary search tree (BST).",
+            examples: [
+              { input: "root = [2,1,3]", output: "true" }
+            ],
+            constraints: ["The number of nodes in the tree is in the range [1, 10^4].", "-2^31 <= Node.val <= 2^31 - 1"],
+            topics: ["Tree", "Depth-First Search", "Binary Search Tree", "Binary Tree"],
+            starterCode: {
+              javascript: `function isValidBST(root) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def isValidBST(self, root: Optional[TreeNode]) -> bool:\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public boolean isValidBST(TreeNode root) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    bool isValidBST(TreeNode* root) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { root: [2, 1, 3] }, expected: true }
+            ]
+          },
+          {
+            title: "Lowest Common Ancestor of a Binary Tree",
+            slug: "lowest-common-ancestor-of-a-binary-tree",
+            difficulty: "Medium",
+            order: 32,
+            videoId: "13m9ZCB8gjw",
+            description: "Given a binary tree, find the lowest common ancestor (LCA) of two given nodes in the tree.",
+            examples: [
+              { input: "root = [3,5,1,6,2,0,8,null,null,7,4], p = 5, q = 1", output: "3" }
+            ],
+            constraints: ["The number of nodes in the tree is in the range [2, 10^5].", "-10^9 <= Node.val <= 10^9", "All Node.val are unique.", "p != q", "p and q will exist in the tree."],
+            topics: ["Tree", "Depth-First Search", "Binary Tree"],
+            starterCode: {
+              javascript: `function lowestCommonAncestor(root, p, q) {\n    // Write your code here\n};`,
+              python: `class Solution:\n    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':\n        # Write your code here\n        pass`,
+              java: `class Solution {\n    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {\n        // Write your code here\n    }\n}`,
+              cpp: `class Solution {\npublic:\n    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {\n        // Write your code here\n    }\n};`
+            },
+            testCases: [
+              { input: { root: [3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], p: 5, q: 1 }, expected: 3 }
+            ]
+          }
+        ];
 
     sampleProblems.forEach(problemData => {
       this.createProblem(problemData);

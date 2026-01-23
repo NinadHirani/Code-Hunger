@@ -73,6 +73,9 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 					<Link href='/' className='h-[22px]'>
 						<div className="text-brand-orange text-2xl font-bold">Code Hunger</div>
 					</Link>
+					<Link href='/' className={`hover:text-white transition font-medium ${location === '/' || location.startsWith('/problems') ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
+						Problems
+					</Link>
 					<Link href='/contests' className={`hover:text-white transition font-medium ${location === '/contests' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
 						Contests
 					</Link>
