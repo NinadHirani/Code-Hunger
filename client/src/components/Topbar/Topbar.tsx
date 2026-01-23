@@ -76,8 +76,12 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 					<Link href='/submissions' className={`hover:text-white transition font-medium ${location === '/submissions' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
 						Submissions
 					</Link>
-					<Link href='/profile' className={`hover:text-white transition font-medium ${location === '/profile' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
-						Profile
+					<Link href='/profile'>
+						<div className='flex items-center justify-center rounded-full bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer border border-transparent hover:border-brand-orange transition-all overflow-hidden'>
+							<div className='w-full h-full bg-gradient-to-tr from-brand-orange to-yellow-500 flex items-center justify-center text-white text-sm font-bold'>
+								{(localStorage.getItem('visitorId') || 'A').charAt(0).toUpperCase()}
+							</div>
+						</div>
 					</Link>
 					{problemPage && <Timer />}
 				</div>
