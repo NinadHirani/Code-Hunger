@@ -665,36 +665,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const submissionData = insertSubmissionSchema.parse(req.body);
       
-      // Simulate code execution and validation
-      const isAccepted = Math.random() > 0.3; // 70% success rate for demo
-      const status = isAccepted ? "Accepted" : "Wrong Answer";
-      const runtime = isAccepted ? Math.floor(Math.random() * 100) + 20 : null;
-      const memory = isAccepted ? Math.floor(Math.random() * 50) + 10 : null;
-      
-      const submission = await storage.createSubmission({
-        ...submissionData,
-        status,
-        runtime,
-        memory
-      });
+      const submission = await storage.createSubmission(submissionData);
 
-      // Update user problem status if accepted
-      if (isAccepted) {
-        const existing = await storage.getUserProblem(submissionData.userId, submissionData.problemId);
-        if (existing) {
-          await storage.updateUserProblem(submissionData.userId, submissionData.problemId, {
-            solved: true,
-            lastAttemptAt: new Date()
-          });
-        } else {
-          await storage.createUserProblem({
-            userId: submissionData.userId,
-            problemId: submissionData.problemId,
-            solved: true,
-            attempts: 1,
-            lastAttemptAt: new Date()
-          });
-        }
+      const isAccepted = submissionData.status === "Accepted";
+
+      // Update user problem status
+      const existing = await storage.getUserProblem(submissionData.userId, submissionData.problemId);
+      if (existing) {
+        await storage.updateUserProblem(submissionData.userId, submissionData.problemId, {
+          solved: existing.solved || isAccepted,
+          attempts: (existing.attempts || 0) + 1,
+          lastAttemptAt: new Date()
+        });
+      } else {
+        await storage.createUserProblem({
+          userId: submissionData.userId,
+          problemId: submissionData.problemId,
+          solved: isAccepted,
+          attempts: 1,
+          lastAttemptAt: new Date()
+        });
       }
       
       res.json(submission);
@@ -703,6 +693,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid submission data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to submit solution" });
+    }
+  });
+
+  // Get user submissions with problem details
+  app.get("/api/users/:userId/submissions-with-details", async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const submissions = await storage.getSubmissionsWithDetails(userId);
+      res.json(submissions);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch submissions with details" });
     }
   });
 

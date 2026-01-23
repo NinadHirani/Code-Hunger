@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ToastContainer } from "react-toastify";
 import Home from "@/pages/Home";
 import ProblemPage from "@/pages/ProblemPage";
+import Submissions from "@/pages/Submissions";
 import NotFound from "@/pages/not-found";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -13,6 +14,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
+      <Route path="/submissions" component={Submissions} />
       <Route path="/problems/:slug" component={ProblemPage} />
       <Route component={NotFound} />
     </Switch>

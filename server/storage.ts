@@ -16,6 +16,7 @@ export interface IStorage {
   
   // Submissions
   getSubmissions(userId: string, problemId?: string): Promise<Submission[]>;
+  getSubmissionsWithDetails(userId: string): Promise<any[]>;
   createSubmission(submission: InsertSubmission): Promise<Submission>;
   
   // User Problems
@@ -754,6 +755,21 @@ public:
       submission => submission.userId === userId && (!problemId || submission.problemId === problemId)
     );
     return submissions;
+  }
+
+  async getSubmissionsWithDetails(userId: string): Promise<any[]> {
+    const submissions = Array.from(this.submissions.values()).filter(
+      submission => submission.userId === userId
+    );
+    
+    return submissions.map(submission => {
+      const problem = this.problems.get(submission.problemId);
+      return {
+        ...submission,
+        problemTitle: problem?.title || "Unknown Problem",
+        problemSlug: problem?.slug || "",
+      };
+    }).sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async createSubmission(insertSubmission: InsertSubmission): Promise<Submission> {
