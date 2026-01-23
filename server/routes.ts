@@ -4,6 +4,24 @@ import { storage } from "./storage";
 import { insertSubmissionSchema, insertUserProblemSchema, insertContestSchema, insertContestParticipantSchema } from "@shared/schema";
 import { z } from "zod";
 import { createHash } from "crypto";
+import OpenAI from "openai";
+
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+
+const SYSTEM_PROMPT = `You are the Code-Hunger Helpbot, an AI assistant for the Code-Hunger competitive programming platform.
+Your goal is to help users navigate the website, understand its features, and assist with coding related questions.
+
+Key Features of Code-Hunger:
+1. Virtual Coding Contests: Timed challenges with real-time leaderboards.
+2. Problems: A wide range of coding problems (Easy, Medium, Hard) in JavaScript, Python, Java, and C++.
+3. Profile: Tracks solved problems, current streak, reward points, and earned badges.
+4. Gamification: Earn XP and badges (like "First Solve", "Algorithmist", "Daily Streak") for solving problems.
+5. Interview Mode: Specialized contest simulation for mock interviews.
+6. Blockchain Security: Contest results are secured with blockchain-style hashing.
+7. Submissions: Detailed history of all code submissions and their status.
+
+Be helpful, concise, and encourage users to keep practicing and participating in contests.
+If a user asks about a specific problem, you can explain the logic but avoid giving the full solution immediately unless they really need it.`;
 
 const PISTON_API = "https://emkc.org/api/v2/piston";
 
@@ -867,25 +885,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create or update user (for Firebase auth integration)
-  app.post("/api/users", async (req, res) => {
-    try {
-      const userData = req.body;
-      
-      // Check if user exists
-      let user = await storage.getUserByEmail(userData.email);
-      if (user) {
-        res.json(user);
-      } else {
-        user = await storage.createUser(userData);
-        res.json(user);
+    // Create or update user (for Firebase auth integration)
+    app.post("/api/users", async (req, res) => {
+      try {
+        const userData = req.body;
+        
+        // Check if user exists
+        let user = await storage.getUserByEmail(userData.email);
+        if (user) {
+          res.json(user);
+        } else {
+          user = await storage.createUser(userData);
+          res.json(user);
+        }
+      } catch (error) {
+        res.status(500).json({ message: "Failed to create/update user" });
       }
-    } catch (error) {
-      res.status(500).json({ message: "Failed to create/update user" });
-    }
-  });
+    });
 
-  const httpServer = createServer(app);
+    // AI Chatbot route
+    app.post("/api/chat", async (req, res) => {
+      try {
+        const { messages } = req.body;
+        
+        if (!openai) {
+          return res.status(503).json({ 
+            content: "I'm sorry, my AI processing is currently disabled because the API key is missing. Please contact the administrator to set up the OPENAI_API_KEY." 
+          });
+        }
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            ...messages
+          ],
+        });
+
+        const content = response.choices[0].message.content;
+        res.json({ content });
+      } catch (error: any) {
+        console.error("Chatbot error:", error);
+        res.status(500).json({ content: "Sorry, I encountered an error while processing your request." });
+      }
+    });
+
+    const httpServer = createServer(app);
+
 
   return httpServer;
 }

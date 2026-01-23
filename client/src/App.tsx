@@ -11,6 +11,7 @@ import Contests from "@/pages/Contests";
 import ContestDetails from "@/pages/ContestDetails";
 import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
+import { Chatbot } from "@/components/Chatbot";
 import "react-toastify/dist/ReactToastify.css";
 
 function Router() {
@@ -46,6 +47,7 @@ function App() {
             theme="dark"
           />
           <Router />
+          <Chatbot />
         </div>
       </TooltipProvider>
     </QueryClientProvider>
