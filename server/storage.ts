@@ -87,9 +87,10 @@ You can return the answer in any order.`,
           javascript: `function twoSum(nums, target) {
     // Write your code here
 };`,
-          python: `def twoSum(nums, target):
-    # Write your code here
-    pass`,
+            python: `class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        # Write your code here
+        pass`,
           java: `class Solution {
     public int[] twoSum(int[] nums, int target) {
         // Write your code here
@@ -148,14 +149,10 @@ public:
 function reverseList(head) {
     // Write your code here
 };`,
-        python: `# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
-def reverseList(head):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def reverseList(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        # Write your code here
+        pass`,
         java: `/**
  * Definition for singly-linked list.
  * public class ListNode {
@@ -228,9 +225,10 @@ Return true if you can reach the last index, or false otherwise.`,
         javascript: `function canJump(nums) {
     // Write your code here
 };`,
-        python: `def canJump(nums):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def canJump(self, nums: List[int]) -> bool:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public boolean canJump(int[] nums) {
         // Write your code here
@@ -291,9 +289,10 @@ An input string is valid if:
         javascript: `function validParentheses(s) {
     // Write your code here
 };`,
-        python: `def validParentheses(s):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def isValid(self, s: str) -> bool:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public boolean validParentheses(String s) {
         // Write your code here
@@ -361,9 +360,10 @@ Given matrix, an m x n matrix, and target, return true if target is in the matri
         javascript: `function searchMatrix(matrix, target) {
     // Write your code here
 };`,
-        python: `def searchMatrix(matrix, target):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public boolean searchMatrix(int[][] matrix, int target) {
         // Write your code here
@@ -418,9 +418,10 @@ Notice that you may not slant the container.`,
         javascript: `function maxArea(height) {
     // Write your code here
 };`,
-        python: `def maxArea(height):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public int maxArea(int[] height) {
         // Write your code here
@@ -470,9 +471,10 @@ public:
         javascript: `function merge(intervals) {
     // Write your code here
 };`,
-        python: `def merge(intervals):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def merge(self, intervals: List[List[int]]) -> List[List[int]]:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public int[][] merge(int[][] intervals) {
         // Write your code here
@@ -529,15 +531,10 @@ A binary tree's maximum depth is the number of nodes along the longest path from
 function maxDepth(root) {
     // Write your code here
 };`,
-        python: `# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
-def maxDepth(root):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def maxDepth(self, root: Optional[TreeNode]) -> int:
+        # Write your code here
+        pass`,
         java: `/**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -617,9 +614,10 @@ Return the maximum profit you can achieve from this transaction. If you cannot a
         javascript: `function maxProfit(prices) {
     // Write your code here
 };`,
-        python: `def maxProfit(prices):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public int maxProfit(int[] prices) {
         // Write your code here
@@ -669,9 +667,10 @@ The solution set must not contain duplicate subsets. Return the solution in any 
         javascript: `function subsets(nums) {
     // Write your code here
 };`,
-        python: `def subsets(nums):
-    # Write your code here
-    pass`,
+          python: `class Solution:
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        # Write your code here
+        pass`,
         java: `class Solution {
     public List<List<Integer>> subsets(int[] nums) {
         // Write your code here

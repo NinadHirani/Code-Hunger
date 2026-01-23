@@ -88,72 +88,12 @@ function treeToArray(root) {
 const PYTHON_HELPERS = `
 import json
 import sys
+from typing import *
 
 class ListNode:
     def __init__(self, val=0, next=None):
         self.val = val
         self.next = next
-
-class TreeNode:
-    def __init__(self, val=0, left=None, right=None):
-        self.val = val
-        self.left = left
-        self.right = right
-
-def array_to_linked_list(arr):
-    if not arr:
-        return None
-    head = ListNode(arr[0])
-    current = head
-    for val in arr[1:]:
-        current.next = ListNode(val)
-        current = current.next
-    return head
-
-def linked_list_to_array(head):
-    result = []
-    current = head
-    count = 0
-    while current and count < 10000:
-        result.append(current.val)
-        current = current.next
-        count += 1
-    return result
-
-def array_to_tree(arr):
-    if not arr or arr[0] is None:
-        return None
-    root = TreeNode(arr[0])
-    queue = [root]
-    i = 1
-    while queue and i < len(arr):
-        node = queue.pop(0)
-        if i < len(arr) and arr[i] is not None:
-            node.left = TreeNode(arr[i])
-            queue.append(node.left)
-        i += 1
-        if i < len(arr) and arr[i] is not None:
-            node.right = TreeNode(arr[i])
-            queue.append(node.right)
-        i += 1
-    return root
-
-def tree_to_array(root):
-    if not root:
-        return []
-    result = []
-    queue = [root]
-    while queue:
-        node = queue.pop(0)
-        if node:
-            result.append(node.val)
-            queue.append(node.left)
-            queue.append(node.right)
-        else:
-            result.append(None)
-    while result and result[-1] is None:
-        result.pop()
-    return result
 `;
 
 const JAVA_HELPERS = `
@@ -400,7 +340,12 @@ ${userCode}
 
 input = ${inputJson.replace(/null/g, 'None').replace(/true/g, 'True').replace(/false/g, 'False')}
 ${argConversions}
-result = ${functionName}(*args)
+
+if 'Solution' in globals():
+    result = Solution().${functionName}(*args)
+else:
+    result = ${functionName}(*args)
+
 output = ${resultConversion}
 if isinstance(output, bool):
     print(json.dumps(output))
