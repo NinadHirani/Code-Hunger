@@ -50,6 +50,7 @@ export class MemStorage implements IStorage {
   }
 
   private initializeProblems() {
+    const sampleProblems: InsertProblem[] = [
       {
         title: "Two Sum",
         slug: "two-sum",
@@ -101,13 +102,13 @@ public:
     }
 };`
         },
-        testCases: [
-          { input: { nums: [2, 7, 11, 15], target: 9 }, expected: [0, 1] },
-          { input: { nums: [3, 2, 4], target: 6 }, expected: [1, 2] }
-        ]
-      },
-    {
-      title: "Reverse Linked List",
+          testCases: [
+            { input: { nums: [2, 7, 11, 15], target: 9 }, expected: [0, 1] },
+            { input: { nums: [3, 2, 4], target: 6 }, expected: [1, 2] }
+          ]
+        },
+      {
+        title: "Reverse Linked List",
       slug: "reverse-linked-list",
       difficulty: "Easy",
       order: 2,
