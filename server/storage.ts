@@ -469,29 +469,265 @@ public:
           { input: { root: [1, 2, 2, 3, 4, 4, 3] }, expected: true }
         ]
       },
-      {
-        title: "Path Sum",
-        slug: "path-sum",
-        difficulty: "Easy",
-        order: 12,
-        videoId: "Hg82DzMemMI",
-        description: `Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.`,
-        examples: [
-          { input: "root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22", output: "true" }
-        ],
-        constraints: ["The number of nodes in the tree is in the range [0, 5000].", "-1000 <= Node.val <= 1000", "-1000 <= targetSum <= 1000"],
-        topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"],
-        starterCode: {
-          javascript: `function hasPathSum(root, targetSum) {\n    // Write your code here\n};`,
-          python: `class Solution:\n    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:\n        # Write your code here\n        pass`,
-          java: `class Solution {\n    public boolean hasPathSum(TreeNode root, int targetSum) {\n        // Write your code here\n    }\n}`,
-          cpp: `class Solution {\npublic:\n    bool hasPathSum(TreeNode* root, int targetSum) {\n        // Write your code here\n    }\n};`
+        {
+          title: "Path Sum",
+          slug: "path-sum",
+          difficulty: "Easy",
+          order: 12,
+          videoId: "Hg82DzMemMI",
+          description: `Given the root of a binary tree and an integer targetSum, return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.`,
+          examples: [
+            { input: "root = [5,4,8,11,null,13,4,7,2,null,null,null,1], targetSum = 22", output: "true" }
+          ],
+          constraints: ["The number of nodes in the tree is in the range [0, 5000].", "-1000 <= Node.val <= 1000", "-1000 <= targetSum <= 1000"],
+          topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"],
+          starterCode: {
+            javascript: `function hasPathSum(root, targetSum) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def hasPathSum(self, root: Optional[TreeNode], targetSum: int) -> bool:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public boolean hasPathSum(TreeNode root, int targetSum) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    bool hasPathSum(TreeNode* root, int targetSum) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { root: [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1], targetSum: 22 }, expected: true }
+          ]
         },
-        testCases: [
-          { input: { root: [5, 4, 8, 11, null, 13, 4, 7, 2, null, null, null, 1], targetSum: 22 }, expected: true }
-        ]
-      }
-    ];
+        {
+          title: "Search a 2D Matrix",
+          slug: "search-a-2d-matrix",
+          difficulty: "Medium",
+          order: 13,
+          videoId: "ZfFl4torNg4",
+          description: `Write an efficient algorithm that searches for a value target in an m x n integer matrix matrix. This matrix has the following properties:
+  - Integers in each row are sorted from left to right.
+  - The first integer of each row is greater than the last integer of the previous row.`,
+          examples: [
+            { input: "matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3", output: "true" }
+          ],
+          constraints: ["m == matrix.length", "n == matrix[i].length", "1 <= m, n <= 100", "-10^4 <= matrix[i][j], target <= 10^4"],
+          topics: ["Array", "Binary Search", "Matrix"],
+          starterCode: {
+            javascript: `function searchMatrix(matrix, target) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def searchMatrix(self, matrix: List[List[int]], target: int) -> bool:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public boolean searchMatrix(int[][] matrix, int target) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    bool searchMatrix(vector<vector<int>>& matrix, int target) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { matrix: [[1, 3, 5, 7], [10, 11, 16, 20], [23, 30, 34, 60]], target: 3 }, expected: true }
+          ]
+        },
+        {
+          title: "Container With Most Water",
+          slug: "container-with-most-water",
+          difficulty: "Medium",
+          order: 14,
+          videoId: "UuiTKBwPgFY",
+          description: `You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]).
+  Find two lines that together with the x-axis form a container, such that the container contains the most water.
+  Return the maximum amount of water a container can store.`,
+          examples: [
+            { input: "height = [1,8,6,2,5,4,8,3,7]", output: "49" }
+          ],
+          constraints: ["n == height.length", "2 <= n <= 10^5", "0 <= height[i] <= 10^4"],
+          topics: ["Array", "Two Pointers", "Greedy"],
+          starterCode: {
+            javascript: `function maxArea(height) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def maxArea(self, height: List[int]) -> int:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public int maxArea(int[] height) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    int maxArea(vector<int>& height) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { height: [1, 8, 6, 2, 5, 4, 8, 3, 7] }, expected: 49 }
+          ]
+        },
+        {
+          title: "Merge Intervals",
+          slug: "merge-intervals",
+          difficulty: "Medium",
+          order: 15,
+          videoId: "44H3cEC2fyg",
+          description: `Given an array of intervals where intervals[i] = [starti, endi], merge all overlapping intervals, and return an array of the non-overlapping intervals that cover all the intervals in the input.`,
+          examples: [
+            { input: "intervals = [[1,3],[2,6],[8,10],[15,18]]", output: "[[1,6],[8,10],[15,18]]" }
+          ],
+          constraints: ["1 <= intervals.length <= 10^4", "intervals[i].length == 2", "0 <= starti <= endi <= 10^4"],
+          topics: ["Array", "Sorting"],
+          starterCode: {
+            javascript: `function merge(intervals) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def merge(self, intervals: List[List[int]]) -> List[List[int]]:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public int[][] merge(int[][] intervals) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    vector<vector<int>> merge(vector<vector<int>>& intervals) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { intervals: [[1, 3], [2, 6], [8, 10], [15, 18]] }, expected: [[1, 6], [8, 10], [15, 18]] }
+          ]
+        },
+        {
+          title: "Maximum Depth of Binary Tree",
+          slug: "maximum-depth-of-binary-tree",
+          difficulty: "Easy",
+          order: 16,
+          videoId: "hTM3phVI6YQ",
+          description: `Given the root of a binary tree, return its maximum depth.
+  A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.`,
+          examples: [
+            { input: "root = [3,9,20,null,null,15,7]", output: "3" }
+          ],
+          constraints: ["The number of nodes in the tree is in the range [0, 10^4].", "-100 <= Node.val <= 100"],
+          topics: ["Tree", "Depth-First Search", "Breadth-First Search", "Binary Tree"],
+          starterCode: {
+            javascript: `function maxDepth(root) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def maxDepth(self, root: Optional[TreeNode]) -> int:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public int maxDepth(TreeNode root) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    int maxDepth(TreeNode* root) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { root: [3, 9, 20, null, null, 15, 7] }, expected: 3 }
+          ]
+        },
+        {
+          title: "Best Time to Buy and Sell Stock",
+          slug: "best-time-to-buy-and-sell-stock",
+          difficulty: "Easy",
+          order: 17,
+          videoId: "1pkOgXD63yU",
+          description: `You are given an array prices where prices[i] is the price of a given stock on the ith day.
+  You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+  Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.`,
+          examples: [
+            { input: "prices = [7,1,5,3,6,4]", output: "5" }
+          ],
+          constraints: ["1 <= prices.length <= 10^5", "0 <= prices[i] <= 10^4"],
+          topics: ["Array", "Dynamic Programming"],
+          starterCode: {
+            javascript: `function maxProfit(prices) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def maxProfit(self, prices: List[int]) -> int:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public int maxProfit(int[] prices) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    int maxProfit(vector<int>& prices) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { prices: [7, 1, 5, 3, 6, 4] }, expected: 5 }
+          ]
+        },
+        {
+          title: "Subsets",
+          slug: "subsets",
+          difficulty: "Medium",
+          order: 18,
+          videoId: "REOH22XQk1c",
+          description: `Given an integer array nums of unique elements, return all possible subsets (the power set).
+  The solution set must not contain duplicate subsets. Return the solution in any order.`,
+          examples: [
+            { input: "nums = [1,2,3]", output: "[[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]" }
+          ],
+          constraints: ["1 <= nums.length <= 10", "-10 <= nums[i] <= 10", "All the numbers of nums are unique."],
+          topics: ["Array", "Backtracking", "Bit Manipulation"],
+          starterCode: {
+            javascript: `function subsets(nums) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def subsets(self, nums: List[int]) -> List[List[int]]:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public List<List<Integer>> subsets(int[] nums) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    vector<vector<int>> subsets(vector<int>& nums) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { nums: [1, 2, 3] }, expected: [[], [1], [2], [1, 2], [3], [1, 3], [2, 3], [1, 2, 3]] }
+          ]
+        },
+        {
+          title: "Longest Common Prefix",
+          slug: "longest-common-prefix",
+          difficulty: "Easy",
+          order: 19,
+          videoId: "0sWShKIJoo4",
+          description: `Write a function to find the longest common prefix string amongst an array of strings. If there is no common prefix, return an empty string "".`,
+          examples: [
+            { input: 'strs = ["flower","flow","flight"]', output: '"fl"' }
+          ],
+          constraints: ["1 <= strs.length <= 200", "0 <= strs[i].length <= 200", "strs[i] consists of only lowercase English letters."],
+          topics: ["String", "Trie"],
+          starterCode: {
+            javascript: `function longestCommonPrefix(strs) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def longestCommonPrefix(self, strs: List[str]) -> str:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public String longestCommonPrefix(String[] strs) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    string longestCommonPrefix(vector<string>& strs) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { strs: ["flower", "flow", "flight"] }, expected: "fl" }
+          ]
+        },
+        {
+          title: "Single Number",
+          slug: "single-number",
+          difficulty: "Easy",
+          order: 20,
+          videoId: "qWPNUv-oAnQ",
+          description: `Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.
+  You must implement a solution with a linear runtime complexity and use only constant extra space.`,
+          examples: [
+            { input: "nums = [2,2,1]", output: "1" }
+          ],
+          constraints: ["1 <= nums.length <= 3 * 10^4", "-3 * 10^4 <= nums[i] <= 3 * 10^4", "Each element in the array appears twice except for one element which appears only once."],
+          topics: ["Array", "Bit Manipulation"],
+          starterCode: {
+            javascript: `function singleNumber(nums) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def singleNumber(self, nums: List[int]) -> int:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public int singleNumber(int[] nums) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    int singleNumber(vector<int>& nums) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { nums: [2, 2, 1] }, expected: 1 }
+          ]
+        },
+        {
+          title: "Valid Anagram",
+          slug: "valid-anagram",
+          difficulty: "Easy",
+          order: 21,
+          videoId: "g8T63iV1E4I",
+          description: `Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+  An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.`,
+          examples: [
+            { input: 's = "anagram", t = "nagaram"', output: "true" }
+          ],
+          constraints: ["1 <= s.length, t.length <= 5 * 10^4", "s and t consist of lowercase English letters."],
+          topics: ["Hash Table", "String", "Sorting"],
+          starterCode: {
+            javascript: `function isAnagram(s, t) {\n    // Write your code here\n};`,
+            python: `class Solution:\n    def isAnagram(self, s: str, t: str) -> bool:\n        # Write your code here\n        pass`,
+            java: `class Solution {\n    public boolean isAnagram(String s, String t) {\n        // Write your code here\n    }\n}`,
+            cpp: `class Solution {\npublic:\n    bool isAnagram(string s, string t) {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { s: "anagram", t: "nagaram" }, expected: true }
+          ]
+        },
+        {
+          title: "Min Stack",
+          slug: "min-stack",
+          difficulty: "Medium",
+          order: 22,
+          videoId: "qkLl7nugYaw",
+          description: `Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+  Implement the MinStack class:
+  - MinStack() initializes the stack object.
+  - void push(int val) pushes the element val onto the stack.
+  - void pop() removes the element on the top of the stack.
+  - int top() gets the top element of the stack.
+  - int getMin() retrieves the minimum element in the stack.`,
+          examples: [
+            { input: '["MinStack","push","push","push","getMin","pop","top","getMin"]\n[[],[-2],[0],[-3],[],[],[],[]]', output: '[null,null,null,null,-3,null,0,-2]' }
+          ],
+          constraints: ["-2^31 <= val <= 2^31 - 1", "Methods pop, top and getMin operations will always be called on non-empty stacks.", "At most 3 * 10^4 calls will be made to push, pop, top, and getMin."],
+          topics: ["Stack", "Design"],
+          starterCode: {
+            javascript: `var MinStack = function() {\n    // Initialize your stack here\n};\n\nMinStack.prototype.push = function(val) {\n    // Write your code here\n};\n\nMinStack.prototype.pop = function() {\n    // Write your code here\n};\n\nMinStack.prototype.top = function() {\n    // Write your code here\n};\n\nMinStack.prototype.getMin = function() {\n    // Write your code here\n};`,
+            python: `class MinStack:\n    def __init__(self):\n        # Initialize your stack here\n        pass\n\n    def push(self, val: int) -> None:\n        # Write your code here\n        pass\n\n    def pop(self) -> None:\n        # Write your code here\n        pass\n\n    def top(self) -> int:\n        # Write your code here\n        pass\n\n    def getMin(self) -> int:\n        # Write your code here\n        pass`,
+            java: `class MinStack {\n    public MinStack() {\n        // Initialize your stack here\n    }\n    \n    public void push(int val) {\n        // Write your code here\n    }\n    \n    public void pop() {\n        // Write your code here\n    }\n    \n    public int top() {\n        // Write your code here\n    }\n    \n    public int getMin() {\n        // Write your code here\n    }\n}`,
+            cpp: `class MinStack {\npublic:\n    MinStack() {\n        // Initialize your stack here\n    }\n    \n    void push(int val) {\n        // Write your code here\n    }\n    \n    void pop() {\n        // Write your code here\n    }\n    \n    int top() {\n        // Write your code here\n    }\n    \n    int getMin() {\n        // Write your code here\n    }\n};`
+          },
+          testCases: [
+            { input: { operations: ["MinStack", "push", "push", "push", "getMin", "pop", "top", "getMin"], values: [[], [-2], [0], [-3], [], [], [], []] }, expected: [null, null, null, null, -3, null, 0, -2] }
+          ]
+        }
+      ];
 
     sampleProblems.forEach(problemData => {
       this.createProblem(problemData);
