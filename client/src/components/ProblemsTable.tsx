@@ -65,21 +65,25 @@ const ProblemsTable: React.FC<ProblemsTableProps> = () => {
 								</tr>
 							</thead>
 							<tbody className='text-white'>
-								{problems.filter(problem => problem.title !== "Two Sum").map((problem: Problem, idx: number) => (
+								{[...problems].sort((a, b) => (a.order || 0) - (b.order || 0)).map((problem: Problem, idx: number) => (
 									<tr 
 										className={`${idx % 2 === 1 ? "bg-dark-layer-1/50" : "bg-transparent"} border-b border-dark-divider-border-2/50 hover:bg-dark-fill-2/80 transition-all duration-200 group`} 
 										key={problem.slug}
 									>
 										<th className='px-4 py-5 font-medium whitespace-nowrap text-dark-green-s'>
 											{/* Status indicator - would show checkmark if solved */}
+											<BsCheckCircle fontSize={"18"} width='18' />
 										</th>
 										<td className='px-6 py-5'>
-											<Link
-												href={`/problems/${problem.slug}`}
-												className='hover:text-brand-orange cursor-pointer font-medium transition-colors'
-											>
-												{problem.title}
-											</Link>
+											<div className="flex items-center gap-2">
+												<span className="text-dark-gray-6 font-mono text-xs w-4">{problem.order}.</span>
+												<Link
+													href={`/problems/${problem.slug}`}
+													className='hover:text-brand-orange cursor-pointer font-medium transition-colors'
+												>
+													{problem.title}
+												</Link>
+											</div>
 										</td>
 										<td className='px-6 py-5'>
 											<span className={`inline-flex px-3 py-1 rounded-full text-xs font-semibold ${
@@ -98,7 +102,15 @@ const ProblemsTable: React.FC<ProblemsTableProps> = () => {
 											</span>
 										</td>
 										<td className={"px-6 py-5"}>
-											<p className='text-dark-gray-6 text-xs'>Coming soon</p>
+											{problem.videoId ? (
+												<AiFillYoutube
+													fontSize={"28"}
+													className='cursor-pointer hover:text-red-600 transition-colors text-dark-gray-6'
+													onClick={() => setYoutubePlayer({ isOpen: true, videoId: problem.videoId as string })}
+												/>
+											) : (
+												<p className='text-dark-gray-6 text-xs italic'>Coming soon</p>
+											)}
 										</td>
 									</tr>
 								))}
@@ -110,21 +122,26 @@ const ProblemsTable: React.FC<ProblemsTableProps> = () => {
                         {youtubePlayer.isOpen && (
                                 <div className='fixed top-0 left-0 h-screen w-screen flex items-center justify-center z-50'>
                                         <div
-                                                className='bg-black z-10 opacity-70 top-0 left-0 w-screen h-screen absolute'
+                                                className='bg-black z-10 opacity-70 top-0 left-0 w-screen h-screen absolute backdrop-blur-sm'
                                                 onClick={closeModal}
                                         ></div>
-                                        <div className='w-full z-50 h-full px-6 relative max-w-4xl'>
-                                                <div className='w-full h-full flex items-center justify-center relative'>
-                                                        <div className='w-full relative'>
-                                                                <IoClose
-                                                                        fontSize={"35"}
-                                                                        className='cursor-pointer absolute -top-16 right-0 text-white'
-                                                                        onClick={closeModal}
-                                                                />
-                                                                <div className="bg-white p-4 rounded-lg">
-                                                                        <p>YouTube player would be here</p>
-                                                                </div>
-                                                        </div>
+                                        <div className='w-full z-50 h-full px-6 relative max-w-4xl flex items-center justify-center'>
+                                                <div className='w-full relative aspect-video shadow-2xl shadow-black'>
+                                                        <IoClose
+                                                                fontSize={"35"}
+                                                                className='cursor-pointer absolute -top-12 right-0 text-white hover:text-brand-orange transition-colors'
+                                                                onClick={closeModal}
+                                                        />
+                                                        <iframe
+                                                                width='100%'
+                                                                height='100%'
+                                                                src={`https://www.youtube.com/embed/${youtubePlayer.videoId}?autoplay=1`}
+                                                                title='YouTube video player'
+                                                                frameBorder='0'
+                                                                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                                                allowFullScreen
+                                                                className="rounded-xl border border-white/10"
+                                                        ></iframe>
                                                 </div>
                                         </div>
                                 </div>
