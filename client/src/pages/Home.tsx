@@ -1,7 +1,6 @@
 import Topbar from "@/components/Topbar";
 import ProblemsTable from "@/components/ProblemsTable";
 import InteractionsSection from "@/components/InteractionsSection";
-import FutureScope from "@/components/FutureScope";
 import { FaCode, FaFire, FaTrophy } from "react-icons/fa";
 
 export default function Home() {
@@ -59,12 +58,9 @@ export default function Home() {
             <p className="text-dark-gray-6">Choose a problem and start coding</p>
           </div>
           
-            <ProblemsTable />
-            
-            <FutureScope />
-          </div>
+          <ProblemsTable />
         </div>
       </div>
-    );
-  }
-
+    </div>
+  );
+}

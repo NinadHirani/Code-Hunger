@@ -40,6 +40,8 @@ export const submissions = pgTable("submissions", {
   language: text("language").notNull(),
   code: text("code").notNull(),
   status: text("status").notNull(), // "Accepted", "Wrong Answer", "Runtime Error", etc
+  passedCount: integer("passed_count").default(0),
+  totalCount: integer("total_count").default(0),
   runtime: integer("runtime"),
   memory: integer("memory"),
   createdAt: timestamp("created_at").defaultNow(),

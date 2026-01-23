@@ -208,17 +208,19 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 				const results = data.results as TestResult[];
 				setTestResults(results);
 
-				const allPassed = results.every(r => r.passed);
+				const passedCount = results.filter(r => r.passed).length;
+				const totalCount = results.length;
+				const allPassed = passedCount === totalCount;
 
 				if (allPassed) {
-					setConsoleOutput([{ type: "success", message: "Accepted! All test cases passed." }]);
+					setConsoleOutput([{ type: "success", message: `Accepted! All ${totalCount} test cases passed.` }]);
 					toast.success("Congratulations! Solution accepted!", { position: "top-center", autoClose: 3000 });
 					setSuccess(true);
 					setSolved(true);
 				} else {
 					const failed = results.find(r => !r.passed);
-					setConsoleOutput([{ type: "error", message: `Wrong Answer on test case ${failed?.testCase}` }]);
-					toast.error("Wrong Answer", { position: "top-center", autoClose: 2000 });
+					setConsoleOutput([{ type: "error", message: `Wrong Answer! ${passedCount}/${totalCount} test cases passed. Failed on test case ${failed?.testCase}` }]);
+					toast.error(`Wrong Answer: ${passedCount}/${totalCount} passed`, { position: "top-center", autoClose: 2000 });
 				}
 
 				// Record submission in database
@@ -232,6 +234,8 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 						language: selectedLanguage,
 						code: currentCode,
 						status: allPassed ? "Accepted" : "Wrong Answer",
+						passedCount,
+						totalCount,
 						runtime: allPassed ? Math.floor(Math.random() * 100) + 20 : null,
 						memory: allPassed ? Math.floor(Math.random() * 50) + 10 : null,
 					})

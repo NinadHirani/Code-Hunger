@@ -758,18 +758,26 @@ public:
   }
 
   async getSubmissionsWithDetails(userId: string): Promise<any[]> {
-    const submissions = Array.from(this.submissions.values()).filter(
-      submission => submission.userId === userId
-    );
+    const submissions = Array.from(this.submissions.values())
+      .filter(submission => submission.userId === userId)
+      .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
+
+    const problemAttempts = new Map<string, number>();
     
-    return submissions.map(submission => {
+    const detailedSubmissions = submissions.map(submission => {
       const problem = this.problems.get(submission.problemId);
+      const attemptNumber = (problemAttempts.get(submission.problemId) || 0) + 1;
+      problemAttempts.set(submission.problemId, attemptNumber);
+      
       return {
         ...submission,
         problemTitle: problem?.title || "Unknown Problem",
         problemSlug: problem?.slug || "",
+        attemptNumber
       };
-    }).sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+    });
+
+    return detailedSubmissions.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async createSubmission(insertSubmission: InsertSubmission): Promise<Submission> {
@@ -777,6 +785,8 @@ public:
     const submission: Submission = { 
       ...insertSubmission, 
       id,
+      passedCount: insertSubmission.passedCount || 0,
+      totalCount: insertSubmission.totalCount || 0,
       runtime: insertSubmission.runtime || null,
       memory: insertSubmission.memory || null,
       createdAt: new Date()
