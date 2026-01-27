@@ -80,9 +80,39 @@ export default function Home() {
             </div>
           </div>
           
-          <InteractionsSection />
-          
-          <div className="grid grid-cols-1 gap-8">
+            <InteractionsSection />
+
+            <div className="mb-12">
+              <div className="bg-gradient-to-r from-brand-orange/10 to-dark-yellow/10 border border-brand-orange/20 rounded-3xl p-8 relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-brand-orange/10 rounded-full -mr-20 -mt-20 blur-3xl group-hover:bg-brand-orange/20 transition-all duration-500" />
+                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+                  <div className="max-w-xl text-center md:text-left">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-orange/20 rounded-full text-brand-orange text-xs font-bold uppercase tracking-wider mb-4">
+                      Live Now
+                    </div>
+                    <h2 className="text-3xl font-bold text-white mb-4">Weekly Coding Contests</h2>
+                    <p className="text-dark-gray-7 text-lg mb-6">
+                      Join thousands of developers in our weekly challenges. Win prizes, earn badges, and climb the global leaderboard.
+                    </p>
+                    <Link href="/contests">
+                      <button className="px-8 py-3 bg-brand-orange hover:bg-brand-orange/90 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-orange/20 hover:shadow-brand-orange/40 transform hover:-translate-y-1">
+                        Explore Contests
+                      </button>
+                    </Link>
+                  </div>
+                  <div className="flex-shrink-0">
+                    <div className="w-48 h-48 bg-dark-layer-1 rounded-2xl border border-dark-divider-border-2 flex items-center justify-center relative">
+                      <FaTrophy className="text-7xl text-brand-orange animate-bounce" />
+                      <div className="absolute -top-4 -right-4 w-12 h-12 bg-dark-yellow rounded-full flex items-center justify-center text-white font-bold shadow-lg">
+                        1st
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 gap-8">
             <div className="w-full">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-white mb-2">Problem Set</h2>
