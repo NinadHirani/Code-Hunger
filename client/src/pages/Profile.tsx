@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'wouter';
-import Topbar from '@/components/Topbar/Topbar';
+import Topbar from '@/components/Topbar';
 import { UserBadge, UserStreak, RewardPoint } from '@shared/schema';
 import { FaFire, FaMedal, FaCoins, FaChartLine } from 'react-icons/fa';
 import { motion } from 'framer-motion';

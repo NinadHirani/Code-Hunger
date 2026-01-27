@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useParams, Link } from 'wouter';
-import Topbar from '@/components/Topbar/Topbar';
+import Topbar from '@/components/Topbar';
 import { Contest, Problem, ContestParticipant } from '@shared/schema';
 import { format, differenceInSeconds } from 'date-fns';
 import { apiRequest, queryClient } from '@/lib/queryClient';

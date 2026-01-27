@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "wouter";
-import Topbar from "@/components/Topbar/Topbar";
+import Topbar from "@/components/Topbar";
 import Workspace from "@/components/Workspace/Workspace";
 
 const ProblemPage: React.FC = () => {

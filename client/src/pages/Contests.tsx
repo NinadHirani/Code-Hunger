@@ -1,6 +1,6 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Topbar from '@/components/Topbar/Topbar';
+import Topbar from '@/components/Topbar';
 import { Contest } from '@shared/schema';
 import { Link } from 'wouter';
 import { format } from 'date-fns';

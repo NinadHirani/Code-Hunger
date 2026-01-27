@@ -1,5 +1,5 @@
 import React from "react";
-import Topbar from "@/components/Topbar/Topbar";
+import Topbar from "@/components/Topbar";
 import { useQuery } from "@tanstack/react-query";
 import { Submission } from "@shared/schema";
 import { Link } from "wouter";
