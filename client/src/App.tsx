@@ -10,6 +10,9 @@ import Submissions from "@/pages/Submissions";
 import Contests from "@/pages/Contests";
 import ContestDetails from "@/pages/ContestDetails";
 import Profile from "@/pages/Profile";
+import LearningPaths from "@/pages/LearningPaths";
+import Colleges from "@/pages/Colleges";
+import JobSimulations from "@/pages/JobSimulations";
 import NotFound from "@/pages/not-found";
 import { Chatbot } from "@/components/Chatbot";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +26,9 @@ function Router() {
       <Route path="/contests/:id" component={ContestDetails} />
       <Route path="/profile" component={Profile} />
       <Route path="/problems/:slug" component={ProblemPage} />
+      <Route path="/learning-paths" component={LearningPaths} />
+      <Route path="/colleges" component={Colleges} />
+      <Route path="/job-simulations" component={JobSimulations} />
       <Route path="/search" component={Home} />
       <Route component={NotFound} />
     </Switch>

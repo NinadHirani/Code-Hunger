@@ -10,7 +10,68 @@ export const users = pgTable("users", {
   displayName: text("display_name").notNull(),
   avatar: text("avatar"),
   createdAt: timestamp("created_at").defaultNow(),
+  collegeId: varchar("college_id"),
+  githubToken: text("github_token"),
+  replitId: text("replit_id"),
 });
+
+export const colleges = pgTable("colleges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  logo: text("logo"),
+  domain: text("domain"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const learningPaths = pgTable("learning_paths", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  image: text("image"),
+  problems: json("problems").notNull().default([]), // Array of { problemId: string, order: number }
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userLearningPaths = pgTable("user_learning_paths", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  pathId: varchar("path_id").notNull().references(() => learningPaths.id),
+  progress: integer("progress").default(0), // percentage
+  completed: boolean("completed").default(false),
+  lastActivity: timestamp("last_activity").defaultNow(),
+});
+
+export const jobSimulations = pgTable("job_simulations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: text("company_name").notNull(),
+  logo: text("logo"),
+  role: text("role").notNull(),
+  description: text("description"),
+  problemIds: text("problem_ids").array().default([]),
+  duration: integer("duration"), // in minutes
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const insertCollegeSchema = createInsertSchema(colleges).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertLearningPathSchema = createInsertSchema(learningPaths).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertJobSimulationSchema = createInsertSchema(jobSimulations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type College = typeof colleges.$inferSelect;
+export type LearningPath = typeof learningPaths.$inferSelect;
+export type UserLearningPath = typeof userLearningPaths.$inferSelect;
+export type JobSimulation = typeof jobSimulations.$inferSelect;
 
 export const problems = pgTable("problems", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

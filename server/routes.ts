@@ -19,6 +19,11 @@ Key Features of Code-Hunger:
 5. Interview Mode: Specialized contest simulation for mock interviews.
 6. Blockchain Security: Contest results are secured with blockchain-style hashing.
 7. Submissions: Detailed history of all code submissions and their status.
+8. Learning Paths: Structured courses to master specific domains (e.g., DSA, Frontend).
+9. Job Simulations: Mock interview experiences for top companies like Google and Meta.
+10. College Hub: Specialized communities for colleges (e.g., MIT, Stanford) with exclusive leaderboards.
+11. Real-time Collaboration: Live collaborative coding sessions with friends.
+12. Cloud Sync: Synchronize your progress and code with GitHub and Replit.
 
 Be helpful, concise, and encourage users to keep practicing and participating in contests.
 If a user asks about a specific problem, you can explain the logic but avoid giving the full solution immediately unless they really need it.`;
@@ -903,34 +908,116 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
 
-    // AI Chatbot route
-    app.post("/api/chat", async (req, res) => {
-      try {
-        const { messages } = req.body;
-        
-        if (!openai) {
-          return res.status(503).json({ 
-            content: "I'm sorry, my AI processing is currently disabled because the API key is missing. Please contact the administrator to set up the OPENAI_API_KEY." 
+      // AI Chatbot route
+      app.post("/api/chat", async (req, res) => {
+        try {
+          const { messages } = req.body;
+          
+          if (!openai) {
+            return res.status(503).json({ 
+              content: "I'm sorry, my AI processing is currently disabled because the API key is missing. Please contact the administrator to set up the OPENAI_API_KEY." 
+            });
+          }
+
+          const response = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: [
+              { role: "system", content: SYSTEM_PROMPT },
+              ...messages
+            ],
           });
+
+          const content = response.choices[0].message.content;
+          res.json({ content });
+        } catch (error: any) {
+          console.error("Chatbot error:", error);
+          res.status(500).json({ content: "Sorry, I encountered an error while processing your request." });
         }
+      });
 
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            ...messages
-          ],
-        });
+      // --- New Features Routes ---
 
-        const content = response.choices[0].message.content;
-        res.json({ content });
-      } catch (error: any) {
-        console.error("Chatbot error:", error);
-        res.status(500).json({ content: "Sorry, I encountered an error while processing your request." });
-      }
-    });
+      // Colleges
+      app.get("/api/colleges", async (req, res) => {
+        try {
+          const colleges = await storage.getColleges();
+          res.json(colleges);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch colleges" });
+        }
+      });
 
-    const httpServer = createServer(app);
+      app.get("/api/colleges/:slug", async (req, res) => {
+        try {
+          const college = await storage.getCollegeBySlug(req.params.slug);
+          if (!college) return res.status(404).json({ message: "College not found" });
+          res.json(college);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch college" });
+        }
+      });
+
+      // Learning Paths
+      app.get("/api/learning-paths", async (req, res) => {
+        try {
+          const paths = await storage.getLearningPaths();
+          res.json(paths);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch learning paths" });
+        }
+      });
+
+      app.get("/api/learning-paths/:id", async (req, res) => {
+        try {
+          const path = await storage.getLearningPath(req.params.id);
+          if (!path) return res.status(404).json({ message: "Learning path not found" });
+          res.json(path);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch learning path" });
+        }
+      });
+
+      app.get("/api/users/:userId/learning-paths", async (req, res) => {
+        try {
+          const paths = await storage.getUserLearningPaths(req.params.userId);
+          res.json(paths);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch user learning paths" });
+        }
+      });
+
+      app.post("/api/users/:userId/learning-paths/:pathId/progress", async (req, res) => {
+        try {
+          const { progress, completed } = req.body;
+          const updated = await storage.updateUserLearningPath(req.params.userId, req.params.pathId, { progress, completed });
+          res.json(updated);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to update progress" });
+        }
+      });
+
+      // Job Simulations
+      app.get("/api/job-simulations", async (req, res) => {
+        try {
+          const simulations = await storage.getJobSimulations();
+          res.json(simulations);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch job simulations" });
+        }
+      });
+
+      app.get("/api/job-simulations/:id", async (req, res) => {
+        try {
+          const simulation = await storage.getJobSimulation(req.params.id);
+          if (!simulation) return res.status(404).json({ message: "Simulation not found" });
+          res.json(simulation);
+        } catch (error) {
+          res.status(500).json({ message: "Failed to fetch simulation" });
+        }
+      });
+
+      const httpServer = createServer(app);
+
 
 
   return httpServer;

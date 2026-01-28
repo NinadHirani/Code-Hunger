@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Problem, type InsertProblem, type Submission, type InsertSubmission, type UserProblem, type InsertUserProblem, type Contest, type InsertContest, type ContestParticipant, type InsertContestParticipant, type Badge, type UserBadge, type UserStreak, type RewardPoint } from "@shared/schema";
+import { type User, type InsertUser, type Problem, type InsertProblem, type Submission, type InsertSubmission, type UserProblem, type InsertUserProblem, type Contest, type InsertContest, type ContestParticipant, type InsertContestParticipant, type Badge, type UserBadge, type UserStreak, type RewardPoint, type College, type LearningPath, type UserLearningPath, type JobSimulation } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -7,6 +7,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: string, updates: Partial<User>): Promise<User>;
   
   // Problems
   getProblems(): Promise<Problem[]>;
@@ -47,6 +48,24 @@ export interface IStorage {
   awardBadge(userId: string, badgeId: string): Promise<UserBadge>;
   getRewardPoints(userId: string): Promise<RewardPoint | undefined>;
   addRewardPoints(userId: string, points: number): Promise<RewardPoint>;
+
+  // Colleges
+  getColleges(): Promise<College[]>;
+  getCollege(id: string): Promise<College | undefined>;
+  getCollegeBySlug(slug: string): Promise<College | undefined>;
+  createCollege(college: any): Promise<College>;
+
+  // Learning Paths
+  getLearningPaths(): Promise<LearningPath[]>;
+  getLearningPath(id: string): Promise<LearningPath | undefined>;
+  createLearningPath(path: any): Promise<LearningPath>;
+  getUserLearningPaths(userId: string): Promise<UserLearningPath[]>;
+  updateUserLearningPath(userId: string, pathId: string, updates: Partial<UserLearningPath>): Promise<UserLearningPath>;
+
+  // Job Simulations
+  getJobSimulations(): Promise<JobSimulation[]>;
+  getJobSimulation(id: string): Promise<JobSimulation | undefined>;
+  createJobSimulation(simulation: any): Promise<JobSimulation>;
 }
 
 export class MemStorage implements IStorage {
@@ -61,6 +80,10 @@ export class MemStorage implements IStorage {
   private userBadges: Map<string, UserBadge>;
   private userStreaks: Map<string, UserStreak>;
   private rewardPoints: Map<string, RewardPoint>;
+  private colleges: Map<string, College>;
+  private learningPaths: Map<string, LearningPath>;
+  private userLearningPaths: Map<string, UserLearningPath>;
+  private jobSimulations: Map<string, JobSimulation>;
 
   constructor() {
     this.users = new Map();
@@ -74,11 +97,39 @@ export class MemStorage implements IStorage {
     this.userBadges = new Map();
     this.userStreaks = new Map();
     this.rewardPoints = new Map();
+    this.colleges = new Map();
+    this.learningPaths = new Map();
+    this.userLearningPaths = new Map();
+    this.jobSimulations = new Map();
     
     // Initialize with sample data
     this.initializeProblems();
     this.initializeContests();
     this.initializeBadges();
+    this.initializeNewFeatures();
+  }
+
+  private initializeNewFeatures() {
+    // Learning Paths
+    const paths = [
+      { id: "1", title: "Data Structures Mastery", description: "Master the fundamentals of DSA.", image: "https://images.unsplash.com/photo-1516116216624-53e697fedbea?w=800&auto=format&fit=crop", problems: [{ problemId: "two-sum", order: 1 }, { problemId: "reverse-linked-list", order: 2 }] },
+      { id: "2", title: "Algorithm Design", description: "Learn advanced algorithm techniques.", image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&auto=format&fit=crop", problems: [{ problemId: "jump-game", order: 1 }] }
+    ];
+    paths.forEach(p => this.learningPaths.set(p.id, p as any));
+
+    // Job Simulations
+    const sims = [
+      { id: "1", companyName: "Google", role: "Software Engineer", description: "Experience a mock interview at Google.", problemIds: ["two-sum", "jump-game"], duration: 90, logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" },
+      { id: "2", companyName: "Meta", role: "Frontend Developer", description: "Frontend focused interview simulation.", problemIds: ["reverse-linked-list"], duration: 60, logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" }
+    ];
+    sims.forEach(s => this.jobSimulations.set(s.id, s as any));
+
+    // Colleges
+    const clgs = [
+      { id: "1", name: "MIT", slug: "mit", domain: "mit.edu", logo: "https://upload.wikimedia.org/wikipedia/commons/0/0c/MIT_logo.svg" },
+      { id: "2", name: "Stanford", slug: "stanford", domain: "stanford.edu", logo: "https://upload.wikimedia.org/wikipedia/en/b/b7/Stanford_University_seal_2003.svg" }
+    ];
+    clgs.forEach(c => this.colleges.set(c.id, c as any));
   }
 
   private initializeProblems() {
@@ -1332,6 +1383,81 @@ public:
     current.updatedAt = new Date();
     this.rewardPoints.set(userId, current);
     return current;
+  }
+
+  async updateUser(id: string, updates: Partial<User>): Promise<User> {
+    const user = this.users.get(id);
+    if (!user) throw new Error("User not found");
+    const updated = { ...user, ...updates };
+    this.users.set(id, updated);
+    return updated;
+  }
+
+  async getColleges(): Promise<College[]> {
+    return Array.from(this.colleges.values());
+  }
+
+  async getCollege(id: string): Promise<College | undefined> {
+    return this.colleges.get(id);
+  }
+
+  async getCollegeBySlug(slug: string): Promise<College | undefined> {
+    return Array.from(this.colleges.values()).find(c => c.slug === slug);
+  }
+
+  async createCollege(college: any): Promise<College> {
+    const id = randomUUID();
+    const c = { ...college, id, createdAt: new Date() };
+    this.colleges.set(id, c);
+    return c;
+  }
+
+  async getLearningPaths(): Promise<LearningPath[]> {
+    return Array.from(this.learningPaths.values());
+  }
+
+  async getLearningPath(id: string): Promise<LearningPath | undefined> {
+    return this.learningPaths.get(id);
+  }
+
+  async createLearningPath(path: any): Promise<LearningPath> {
+    const id = randomUUID();
+    const p = { ...path, id, createdAt: new Date() };
+    this.learningPaths.set(id, p);
+    return p;
+  }
+
+  async getUserLearningPaths(userId: string): Promise<UserLearningPath[]> {
+    return Array.from(this.userLearningPaths.values()).filter(p => p.userId === userId);
+  }
+
+  async updateUserLearningPath(userId: string, pathId: string, updates: Partial<UserLearningPath>): Promise<UserLearningPath> {
+    const key = `${userId}-${pathId}`;
+    const existing = Array.from(this.userLearningPaths.values()).find(p => p.userId === userId && p.pathId === pathId);
+    if (!existing) {
+      const id = randomUUID();
+      const p = { id, userId, pathId, progress: 0, completed: false, lastActivity: new Date(), ...updates };
+      this.userLearningPaths.set(id, p);
+      return p;
+    }
+    const updated = { ...existing, ...updates, lastActivity: new Date() };
+    this.userLearningPaths.set(existing.id, updated);
+    return updated;
+  }
+
+  async getJobSimulations(): Promise<JobSimulation[]> {
+    return Array.from(this.jobSimulations.values());
+  }
+
+  async getJobSimulation(id: string): Promise<JobSimulation | undefined> {
+    return this.jobSimulations.get(id);
+  }
+
+  async createJobSimulation(simulation: any): Promise<JobSimulation> {
+    const id = randomUUID();
+    const s = { ...simulation, id, createdAt: new Date() };
+    this.jobSimulations.set(id, s);
+    return s;
   }
 }
 

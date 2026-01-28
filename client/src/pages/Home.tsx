@@ -4,6 +4,7 @@ import InteractionsSection from "@/components/InteractionsSection";
 import { FaCode, FaFire, FaTrophy, FaCoins, FaChartLine } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { Link } from "wouter";
 import type { UserStreak, RewardPoint } from "@shared/schema";
 
 export default function Home() {

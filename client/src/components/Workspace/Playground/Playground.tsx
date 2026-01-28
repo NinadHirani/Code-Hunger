@@ -71,6 +71,14 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 	const [consoleOutput, setConsoleOutput] = useState<ConsoleOutput[]>([]);
 	const [isRunning, setIsRunning] = useState(false);
 
+	// Collaboration state
+	const [collaborationActive, setCollaborationActive] = useState(false);
+	const [roomId, setRoomId] = useState(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		return urlParams.get("collaborationRoom") || Math.random().toString(36).substring(7);
+	});
+	const wsRef = useRef<WebSocket | null>(null);
+
 	const { data: problem, isLoading } = useQuery<Problem>({
 		queryKey: [`/api/problems/${problemSlug}`],
 	});
@@ -91,6 +99,38 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 			cpp: ""
 		}
 	);
+
+	// Collaboration WebSocket logic
+	useEffect(() => {
+		if (collaborationActive) {
+			const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+			const ws = new WebSocket(`${protocol}//${window.location.host}/ws/collaborate?roomId=${roomId}`);
+			wsRef.current = ws;
+
+			ws.onmessage = (event) => {
+				const data = JSON.parse(event.data);
+				if (data.type === "change" || data.type === "sync") {
+					setUserCode((prev) => ({
+						...prev,
+						[selectedLanguage]: data.code
+					}));
+				}
+			};
+
+			return () => {
+				ws.close();
+				wsRef.current = null;
+			};
+		}
+	}, [collaborationActive, roomId, selectedLanguage, setUserCode]);
+
+	// Auto-activate collaboration if room in URL
+	useEffect(() => {
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.has("collaborationRoom")) {
+			setCollaborationActive(true);
+		}
+	}, []);
 
 	useEffect(() => {
 		if (problem?.starterCode) {
@@ -113,6 +153,10 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 			...prev,
 			[selectedLanguage]: value
 		}));
+
+		if (collaborationActive && wsRef.current?.readyState === WebSocket.OPEN) {
+			wsRef.current.send(JSON.stringify({ type: "change", code: value }));
+		}
 	};
 
 	const handleLanguageChange = (lang: Language) => {
@@ -263,6 +307,9 @@ const Playground: React.FC<PlaygroundProps> = ({ problemSlug, setSuccess, setSol
 				setSettings={setSettings}
 				selectedLanguage={selectedLanguage}
 				onLanguageChange={handleLanguageChange}
+				collaborationActive={collaborationActive}
+				setCollaborationActive={setCollaborationActive}
+				roomId={roomId}
 			/>
 
 			<Split className='h-[calc(100vh-94px)]' direction='vertical' sizes={[60, 40]} minSize={60}>
