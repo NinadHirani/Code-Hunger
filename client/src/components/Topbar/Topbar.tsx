@@ -82,6 +82,18 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
 					<Link href='/submissions' className={`hover:text-white transition font-medium ${location === '/submissions' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
 						Submissions
 					</Link>
+					<Link href='/learning-paths' className={`hover:text-white transition font-medium relative ${location === '/learning-paths' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
+						Paths
+						<span className='absolute -top-3 -right-3 text-[8px] bg-brand-orange text-white px-1 rounded-full'>NEW</span>
+					</Link>
+					<Link href='/colleges' className={`hover:text-white transition font-medium relative ${location === '/colleges' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
+						Colleges
+						<span className='absolute -top-3 -right-3 text-[8px] bg-brand-orange text-white px-1 rounded-full'>NEW</span>
+					</Link>
+					<Link href='/job-simulations' className={`hover:text-white transition font-medium relative ${location === '/job-simulations' ? 'text-brand-orange' : 'text-dark-gray-7'}`}>
+						Sims
+						<span className='absolute -top-3 -right-3 text-[8px] bg-brand-orange text-white px-1 rounded-full'>NEW</span>
+					</Link>
 					<Link href='/profile'>
 						<div className='flex items-center justify-center rounded-full bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer border border-transparent hover:border-brand-orange transition-all overflow-hidden'>
 							<div className='w-full h-full bg-gradient-to-tr from-brand-orange to-yellow-500 flex items-center justify-center text-white text-sm font-bold'>
