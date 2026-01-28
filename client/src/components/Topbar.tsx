@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BsList } from "react-icons/bs";
-import Timer from "../Timer/Timer";
+import Timer from "./Timer";
 import { useQuery } from "@tanstack/react-query";
 
 type TopbarProps = {
