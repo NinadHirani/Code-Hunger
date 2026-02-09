@@ -122,8 +122,13 @@ export default function Home() {
               <ProblemsTable />
             </div>
           </div>
-        </div>
+          </div>
       </div>
+      <footer className="w-full py-6 mt-12 border-t border-dark-fill-3 text-center">
+        <p className="text-dark-gray-6 text-sm">
+          Developed by <span className="text-brand-orange font-semibold">Ninad Hirani</span>
+        </p>
+      </footer>
     </div>
   );
 }

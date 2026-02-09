@@ -5,6 +5,7 @@ import { insertSubmissionSchema, insertUserProblemSchema, insertContestSchema, i
 import { z } from "zod";
 import { createHash } from "crypto";
 import OpenAI from "openai";
+import fetch from "node-fetch";
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
@@ -487,21 +488,41 @@ int main() {
 }
 
 function extractFunctionName(code: string, language: string): string {
+  const skipNames = new Set(["if", "for", "while", "switch", "catch", "main", "class", "struct", "return", "Solution", "Main"]);
+
   if (language === "javascript") {
     const match = code.match(/function\s+(\w+)\s*\(/);
     return match ? match[1] : "solution";
   }
   if (language === "python") {
+    // Look for methods inside class Solution first
+    const classMatch = code.match(/class\s+Solution[\s\S]*?def\s+(\w+)\s*\(\s*self/);
+    if (classMatch && classMatch[1] !== "__init__") return classMatch[1];
     const match = code.match(/def\s+(\w+)\s*\(/);
     return match ? match[1] : "solution";
   }
   if (language === "java") {
-    const match = code.match(/public\s+\w+\s+(\w+)\s*\(/);
-    return match ? match[1] : "solution";
+    // Match public methods inside class Solution, skip 'main'
+    const methods = [...code.matchAll(/public\s+[\w<>\[\]]+\s+(\w+)\s*\(/g)];
+    for (const m of methods) {
+      if (!skipNames.has(m[1])) return m[1];
+    }
+    return "solution";
   }
   if (language === "cpp") {
-    const match = code.match(/(\w+)\s*\([^)]*\)\s*\{/);
-    return match ? match[1] : "solution";
+    // Try to find a method inside class Solution { public: ... }
+    const classBody = code.match(/class\s+Solution\s*\{([\s\S]*)\}/);
+    if (classBody) {
+      // Match return_type methodName( inside the class body
+      const methodMatch = classBody[1].match(/\b[\w<>&*:\s]+?\b(\w+)\s*\([^)]*\)\s*(const\s*)?\{/);
+      if (methodMatch && !skipNames.has(methodMatch[1])) return methodMatch[1];
+    }
+    // Fallback: find any function that isn't a keyword or main
+    const allFns = [...code.matchAll(/\b(\w+)\s*\([^)]*\)\s*\{/g)];
+    for (const m of allFns) {
+      if (!skipNames.has(m[1])) return m[1];
+    }
+    return "solution";
   }
   return "solution";
 }
@@ -692,40 +713,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit a solution
   app.post("/api/submissions", async (req, res) => {
     try {
-      const submissionData = insertSubmissionSchema.parse(req.body);
-      
-      const submission = await storage.createSubmission(submissionData);
-
-      const isAccepted = submissionData.status === "Accepted";
-
-      // Update user problem status
-      const existing = await storage.getUserProblem(submissionData.userId, submissionData.problemId);
-      if (existing) {
-        await storage.updateUserProblem(submissionData.userId, submissionData.problemId, {
-          solved: existing.solved || isAccepted,
-          attempts: (existing.attempts || 0) + 1,
-          lastAttemptAt: new Date()
-        });
-      } else {
-        await storage.createUserProblem({
-          visitorId: submissionData.userId, // Using userId as visitorId for persistence
-          problemSlug: submissionData.problemId, // Using problemId as slug for status mapping
-          solved: isAccepted,
-          attempts: 1,
-          lastAttemptAt: new Date()
-        });
-      }
-
-      if (isAccepted) {
-        // Update streak
-        await storage.updateUserStreak(submissionData.userId);
-        // Add reward points
-        await storage.addRewardPoints(submissionData.userId, 10);
+        const submissionData = insertSubmissionSchema.parse(req.body);
         
-        // Check for badges (simple check)
-        const problems = await storage.getProblems();
-        const userProblems = await Promise.all(problems.map(p => storage.getUserProblem(submissionData.userId, p.id)));
-        const solvedCount = userProblems.filter(p => p?.solved).length;
+        const submission = await storage.createSubmission(submissionData);
+
+        const isAccepted = submissionData.status === "Accepted";
+
+        // Resolve problemId (UUID) to slug for userProblems tracking
+        const problem = await storage.getProblem(submissionData.problemId);
+        const problemSlug = problem?.slug || submissionData.problemId;
+
+        // Update user problem status (keyed by slug, not UUID)
+        const existing = await storage.getUserProblem(submissionData.userId, problemSlug);
+        if (existing) {
+          await storage.updateUserProblem(submissionData.userId, problemSlug, {
+            solved: existing.solved || isAccepted,
+            attempts: (existing.attempts || 0) + 1,
+            lastAttemptAt: new Date()
+          });
+        } else {
+          await storage.createUserProblem({
+            visitorId: submissionData.userId,
+            problemSlug: problemSlug,
+            solved: isAccepted,
+            attempts: 1,
+            lastAttemptAt: new Date()
+          });
+        }
+
+        if (isAccepted) {
+          // Update streak
+          await storage.updateUserStreak(submissionData.userId);
+          // Add reward points
+          await storage.addRewardPoints(submissionData.userId, 10);
+          
+          // Check for badges — use slug (not UUID) to match userProblems keys
+          const problems = await storage.getProblems();
+          const userProblems = await Promise.all(problems.map(p => storage.getUserProblem(submissionData.userId, p.slug)));
+          const solvedCount = userProblems.filter(p => p?.solved).length;
         
         const badges = await storage.getBadges();
         const userBadges = await storage.getUserBadges(submissionData.userId);
@@ -875,7 +900,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const userProblems = await Promise.all(
         problems.map(async (problem) => {
-          const userProblem = await storage.getUserProblem(userId, problem.id);
+            const userProblem = await storage.getUserProblem(userId, problem.slug);
           return {
             ...problem,
             solved: userProblem?.solved || false,

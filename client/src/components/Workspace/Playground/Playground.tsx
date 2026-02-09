@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import PreferenceNav from "./PreferenceNav/PreferenceNav";
 import { Language } from "./PreferenceNav/PreferenceNav";
 import Split from "react-split";
