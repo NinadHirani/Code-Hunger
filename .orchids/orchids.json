@@ -3,5 +3,7 @@
   "createdAt": 1737331417000,
   "startupCommands": [
     "npm install; NODE_ENV=development ./node_modules/.bin/tsx server/index.ts"
-  ]
+  ],
+  "deployedWithUserToken": true,
+  "vercelProjectId": "prj_m204A5GBEhKOunjp9VIqv2Lz306O"
 }
