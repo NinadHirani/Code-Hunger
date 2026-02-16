@@ -5,7 +5,7 @@ import { insertSubmissionSchema, insertUserProblemSchema, insertContestSchema, i
 import { z } from "zod";
 import { createHash } from "crypto";
 import OpenAI from "openai";
-import fetch from "node-fetch";
+
 
 const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
